@@ -1,32 +1,39 @@
+/* ============================================================
+   RISKRADAR — COMMAND INFRASTRUCTURE STATUS MODULE
+   Operational Sensing & Telemetry Backbone
+   ============================================================ */
+
 .rr-infra-instrument {
   background: var(--surface-secondary);
   border: 1px solid var(--border-obsidian);
   border-radius: var(--radius-lg);
-  padding: 14px 18px;
+  padding: 12px 18px 13px 18px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 8px;
+  gap: 9px;
   height: 100%;
   min-height: 0;
   width: 100%;
   min-width: 0;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
-/* 1. Header */
+/* 1. Header with Restrained Nominal Status */
 .rr-infra-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   min-width: 0;
-  gap: 8px;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
 .rr-infra-title {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-size: 12.5px;
+  font-weight: 650;
+  letter-spacing: 0.05em;
   color: var(--text-secondary);
   white-space: nowrap;
   flex-shrink: 0;
@@ -35,40 +42,65 @@
 .rr-infra-status-wrap {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   flex-shrink: 0;
+  background: rgba(54, 201, 143, 0.07);
+  border: 1px solid rgba(54, 201, 143, 0.22);
+  border-radius: 3px;
+  padding: 1.5px 6px;
+  user-select: none;
+}
+
+.rr-infra-status-dot {
+  width: 4.5px;
+  height: 4.5px;
+  border-radius: 50%;
+  background-color: var(--semantic-nominal);
+  box-shadow: 0 0 5px rgba(54, 201, 143, 0.65);
+  animation: rrNominalPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes rrNominalPulse {
+  0%, 100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 .rr-infra-status-text {
-  font-size: 10.5px;
-  font-weight: 600;
+  font-size: 8.5px;
+  font-weight: 650;
   letter-spacing: 0.06em;
-  color: var(--semantic-safe);
-  white-space: nowrap;
+  color: var(--semantic-nominal);
+  line-height: 1;
 }
 
-/* 2. Integrated 5-Metric Strip */
+/* 2. Unified 5-Metric Strip with Hairline Separators & Baseline Alignment */
 .rr-infra-metrics-deck {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   background: var(--surface-elevated);
   border: 1px solid var(--border-obsidian);
-  border-radius: var(--radius-sm);
+  border-radius: 7px;
   width: 100%;
   min-width: 0;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
 }
 
 .rr-infra-metric-unit {
-  padding: 6px 10px;
-  border-right: 1px solid var(--border-obsidian);
+  padding: 6px 8px 6px 8px;
+  border-right: 1px solid rgba(130, 150, 170, 0.12);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 4px;
+  justify-content: space-between;
   min-width: 0;
   overflow: hidden;
-  transition: background var(--trans-fast);
+  transition: background-color 160ms ease;
+  cursor: default;
 }
 
 .rr-infra-metric-unit.last {
@@ -76,108 +108,135 @@
 }
 
 .rr-infra-metric-unit:hover {
-  background: var(--surface-soft);
+  background: rgba(255, 255, 255, 0.025);
 }
 
 .rr-metric-unit-label {
-  font-size: 9.5px;
-  font-weight: 500;
+  font-size: 8.5px;
+  font-weight: 600;
   letter-spacing: 0.03em;
   color: var(--text-muted);
-  white-space: normal;
-  line-height: 1.2;
-  word-break: break-word;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
 }
 
 .rr-metric-unit-val {
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 650;
   color: var(--text-primary);
   line-height: 1;
   white-space: nowrap;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  margin: 1px 0;
 }
 
 .rr-metric-unit-val.safe {
-  color: var(--semantic-safe);
+  color: var(--semantic-nominal);
 }
 
-.rr-metric-unit-val.blue {
-  color: var(--signal-blue);
+.rr-metric-unit-val.cyan {
+  color: var(--signal-cyan);
 }
 
 .rr-metric-unit-val.muted {
   color: var(--text-muted);
 }
 
-/* 3. Subtle Hairline Separator */
-.rr-infra-internal-divider {
-  height: 1px;
-  background: var(--border-obsidian);
-  margin: 1px 0;
-  opacity: 0.6;
+.rr-metric-unit-sub {
+  font-size: 8px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
 }
 
-/* 4. Dedicated Horizontal Topology Strip (45-50px) */
+/* 3. Dedicated Horizontal Topology Strip (Recessed Instrument Surface) */
 .rr-infra-topology-flow {
-  height: 46px;
-  min-height: 46px;
-  background: var(--surface-elevated);
-  border: 1px solid var(--border-obsidian);
-  border-radius: var(--radius-sm);
-  padding: 0 12px;
+  height: 36px;
+  min-height: 36px;
+  flex-shrink: 0;
+  background: rgba(8, 11, 16, 0.55);
+  border: 1px solid rgba(130, 150, 170, 0.14);
+  border-radius: 6px;
+  padding: 0 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   min-width: 0;
-  overflow: hidden;
   gap: 4px;
+  overflow: hidden;
 }
 
 .rr-topo-cell {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 2px;
+  gap: 1.5px;
   min-width: 0;
-  flex: 1 1 auto;
+  flex: 1 1 0;
   overflow: hidden;
 }
 
 .rr-topo-head {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4.5px;
   min-width: 0;
+  line-height: 1;
+}
+
+.rr-topo-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.rr-topo-dot.safe {
+  background: var(--semantic-nominal);
+  box-shadow: 0 0 3px rgba(54, 201, 143, 0.5);
+}
+
+.rr-topo-dot.cyan {
+  background: var(--signal-cyan);
+  box-shadow: 0 0 4px rgba(99, 215, 229, 0.6);
 }
 
 .rr-topo-name {
-  font-size: 10.5px;
-  font-weight: 600;
+  font-size: 9.5px;
+  font-weight: 700;
   letter-spacing: 0.04em;
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1;
 }
 
 .rr-topo-sub {
-  font-size: 9px;
+  font-size: 8px;
   color: var(--text-muted);
-  padding-left: 11px;
+  padding-left: 8.5px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1;
 }
 
 /* Connector Link & Data Signal */
 .rr-topo-link {
   display: flex;
   align-items: center;
-  gap: 3px;
-  flex: 0 1 28px;
-  min-width: 12px;
-  max-width: 36px;
+  gap: 2px;
+  flex: 0 1 24px;
+  min-width: 10px;
+  max-width: 28px;
   justify-content: center;
 }
 
@@ -185,7 +244,7 @@
   position: relative;
   width: 100%;
   height: 1px;
-  background: var(--border-obsidian);
+  background: rgba(130, 150, 170, 0.2);
   overflow: hidden;
 }
 
@@ -196,7 +255,19 @@
   width: 5px;
   height: 1px;
   background: var(--signal-cyan);
-  animation: signalFlow 3s linear infinite;
+  animation: signalFlow 3s ease-in-out infinite;
+}
+
+.rr-topo-flow-dot.delay-0 {
+  animation-delay: 0s;
+}
+
+.rr-topo-flow-dot.delay-1 {
+  animation-delay: 0.8s;
+}
+
+.rr-topo-flow-dot.delay-2 {
+  animation-delay: 1.6s;
 }
 
 @keyframes signalFlow {
@@ -204,19 +275,42 @@
     transform: translateX(-6px);
     opacity: 0;
   }
-  25% {
-    opacity: 0.9;
+  20% {
+    opacity: 0.95;
   }
-  75% {
-    opacity: 0.9;
+  80% {
+    opacity: 0.95;
   }
   100% {
-    transform: translateX(36px);
+    transform: translateX(28px);
     opacity: 0;
   }
 }
 
 .rr-topo-pointer {
-  font-size: 10px;
-  color: var(--text-muted);
+  font-size: 9px;
+  color: rgba(130, 150, 170, 0.45);
+  line-height: 1;
 }
+
+/* Accessibility & Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .rr-topo-flow-dot,
+  .rr-infra-status-dot {
+    animation: none !important;
+  }
+}
+
+/* Responsive Composition */
+@media (max-width: 1100px) {
+  .rr-metric-unit-sub {
+    display: none;
+  }
+  .rr-metric-unit-val {
+    font-size: 18px;
+  }
+  .rr-topo-sub {
+    display: none;
+  }
+}
+
