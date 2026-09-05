@@ -1,165 +1,232 @@
+/* ============================================================
+   RISKRADAR — NATIONAL GIS COMMAND SURFACE
+   High-Authority Emergency Operations Map Interface
+   ============================================================ */
+
 .rr-riskmap-frame {
   position: relative;
   width: 100%;
   height: 100%;
-  background: var(--bg-obsidian);
-  border-radius: var(--radius-lg);
+  min-height: 0;
+  background: var(--bg-obsidian, #080B10);
+  border-radius: 8px;
   overflow: hidden;
-  border: 1px solid var(--border-obsidian);
+  border: 1px solid rgba(130, 150, 170, 0.16);
   display: flex;
   flex-direction: column;
+}
+
+.rr-riskmap-frame.fullscreen {
+  border-radius: 0;
+  border: none;
 }
 
 .rr-riskmap-canvas {
   width: 100%;
   height: 100%;
   flex: 1;
+  background: #0D1219;
 }
 
-/* Floating HUD Top */
+/* ============================================================
+   FLOATING HUD: TOP OPERATIONAL CONTROLS
+   ============================================================ */
+
 .rr-map-hud-top {
   position: absolute;
-  top: var(--space-12);
-  left: var(--space-12);
-  right: var(--space-12);
+  top: 10px;
+  left: 12px;
+  right: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
   pointer-events: none;
   z-index: 500;
 }
 
+/* Top-Left Theatre Context Badge */
 .rr-map-title-badge {
   pointer-events: auto;
-  background: var(--surface-overlay);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--border-obsidian);
+  background: rgba(13, 19, 27, 0.94);
+  border: 1px solid rgba(130, 150, 170, 0.18);
   padding: 4px 10px;
-  border-radius: var(--radius-sm);
+  border-radius: 6px;
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 11px;
-  color: var(--text-secondary);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  user-select: none;
+  flex-shrink: 1;
+  min-width: 0;
+  max-width: fit-content;
 }
 
 .rr-hud-shield-icon {
-  color: var(--signal-cyan);
+  color: var(--signal-cyan, #63D7E5);
+  flex-shrink: 0;
 }
 
-.rr-map-title-badge strong {
-  color: var(--text-primary);
-  font-weight: 550;
+.rr-map-badge-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  min-width: 0;
 }
 
+.rr-map-badge-text span:first-child {
+  font-family: var(--font-sans, 'Geist', sans-serif);
+  font-size: 10.5px;
+  font-weight: 650;
+  color: #FFFFFF;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rr-map-badge-sub {
+  font-family: var(--font-sans, 'Geist', sans-serif);
+  font-size: 9px;
+  font-weight: 500;
+  color: #8B98A7;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Top-Right HUD Action Group */
 .rr-map-hud-actions {
   pointer-events: auto;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  flex-shrink: 0;
 }
 
-/* Layer Control */
+/* ============================================================
+   HAZARD LAYERS CONTROL
+   ============================================================ */
+
 .rr-layers-control-wrap {
   position: relative;
 }
 
 .rr-layers-trigger-btn {
-  background: var(--surface-overlay);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--border-obsidian);
-  color: var(--text-primary);
-  height: 28px;
+  background: rgba(13, 19, 27, 0.94);
+  border: 1px solid rgba(130, 150, 170, 0.18);
+  color: #F2F5F7;
+  height: 30px;
   padding: 0 9px;
-  border-radius: var(--radius-sm);
+  border-radius: 6px;
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
-  font-weight: 500;
-  font-family: var(--font-sans);
+  font-size: 10.5px;
+  font-weight: 550;
+  font-family: var(--font-sans, 'Geist', sans-serif);
   cursor: pointer;
-  transition: all var(--trans-fast);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: background-color 180ms ease, border-color 180ms ease;
+  user-select: none;
 }
 
 .rr-layers-trigger-btn:hover {
-  background: var(--surface-elevated);
-  border-color: var(--border-focus);
+  background: #17202B;
+  border-color: rgba(99, 215, 229, 0.35);
 }
 
 .rr-layers-trigger-btn.active {
-  border-color: var(--signal-cyan);
-  color: var(--signal-cyan);
+  border-color: rgba(99, 215, 229, 0.5);
+  color: #FFFFFF;
 }
 
 .rr-layers-icon {
-  color: var(--text-secondary);
+  color: #8B98A7;
 }
 
 .rr-layers-count {
-  font-size: 9.5px;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 1px 4px;
-  border-radius: var(--radius-sm);
-  color: var(--text-secondary);
+  font-size: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: #63D7E5;
+  font-weight: 600;
 }
 
 .rr-chevron-icon {
-  transition: transform var(--trans-fast);
+  color: #8B98A7;
+  transition: transform 180ms ease;
 }
 
 .rr-chevron-icon.open {
   transform: rotate(180deg);
 }
 
+/* Layers Dropdown Panel */
 .rr-layers-dropdown {
   position: absolute;
-  top: 34px;
+  top: 38px;
   right: 0;
-  width: 200px;
-  background: var(--surface-overlay);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border-obsidian);
-  border-radius: var(--radius-md);
+  width: 220px;
+  background: #0D131B;
+  border: 1px solid rgba(130, 150, 170, 0.22);
+  border-radius: 7px;
   padding: 8px 10px;
-  box-shadow: var(--shadow-panel);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
   display: flex;
   flex-direction: column;
   gap: 4px;
-  z-index: 550;
+  z-index: 600;
+  animation: rrLayerDropdownOpen 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes rrLayerDropdownOpen {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .rr-layers-dropdown-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 5px;
-  border-bottom: 1px solid var(--border-subtle);
+  padding: 4px 6px 6px 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   font-size: 9.5px;
-  font-weight: 600;
-  color: var(--text-muted);
+  font-weight: 700;
+  color: #8B98A7;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .rr-layers-dropdown-meta {
-  color: var(--signal-cyan);
+  color: #63D7E5;
+  font-weight: 600;
 }
 
 .rr-layers-list {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  margin-top: 2px;
 }
 
 .rr-layer-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 6px;
-  border-radius: var(--radius-sm);
+  padding: 5px 6px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background var(--trans-fast);
+  transition: background-color 150ms ease;
+  user-select: none;
 }
 
 .rr-layer-row:hover {
@@ -169,138 +236,763 @@
 .rr-layer-info {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   font-size: 11px;
-  color: var(--text-primary);
+  color: #F2F5F7;
 }
 
 .rr-layer-color-pip {
   width: 7px;
   height: 7px;
-  border-radius: 2px;
+  border-radius: 50%;
   flex-shrink: 0;
 }
 
 .rr-layer-checkbox {
-  width: 12px;
-  height: 12px;
-  accent-color: var(--signal-cyan);
+  width: 13px;
+  height: 13px;
+  accent-color: #63D7E5;
   cursor: pointer;
 }
 
-/* Map Action Controls */
+/* ============================================================
+   MAP ACTION CONTROLS
+   ============================================================ */
+
 .rr-map-controls {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
 }
 
 .rr-map-control-btn {
-  background: var(--surface-overlay);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--border-obsidian);
-  color: var(--text-secondary);
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-sm);
+  background: rgba(13, 19, 27, 0.94);
+  border: 1px solid rgba(130, 150, 170, 0.18);
+  color: #CAD6E2;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--trans-fast);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
 }
 
 .rr-map-control-btn:hover {
-  color: var(--text-primary);
-  background: var(--surface-elevated);
-  border-color: var(--border-focus);
+  color: #FFFFFF;
+  background: #17202B;
+  border-color: rgba(99, 215, 229, 0.35);
 }
 
-/* Cartographic Legend */
+.rr-map-control-btn:active {
+  transform: translateY(1px);
+}
+
+.rr-map-control-btn.active {
+  color: #63D7E5;
+  border-color: rgba(99, 215, 229, 0.5);
+}
+
+/* ============================================================
+   TACTICAL HAZARD INCIDENT MARKERS
+   ============================================================ */
+
+.rr-incident-icon-container {
+  background: transparent !important;
+  border: none !important;
+}
+
+.rr-incident-beacon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Concentric Radar Pulse (Center around critical active incident only) */
+.rr-incident-radar-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 28px;
+  height: 28px;
+  margin-top: -14px;
+  margin-left: -14px;
+  border-radius: 50%;
+  border: 1.5px solid #F05D6B;
+  pointer-events: none;
+  animation: rrIncidentPulse 2.8s ease-out infinite;
+}
+
+@keyframes rrIncidentPulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(2.8);
+    opacity: 0;
+  }
+}
+
+.rr-incident-marker-core {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+  z-index: 2;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.rr-incident-beacon-wrap:hover .rr-incident-marker-core {
+  transform: scale(1.22);
+}
+
+.rr-incident-inner-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  transition: transform 180ms ease;
+}
+
+/* Severity Specific Core Colors */
+.rr-incident-beacon-wrap.critical .rr-incident-marker-core {
+  background: rgba(240, 93, 107, 0.25);
+  border: 1.5px solid #F05D6B;
+}
+.rr-incident-beacon-wrap.critical .rr-incident-inner-dot {
+  background: #F05D6B;
+  box-shadow: 0 0 6px rgba(240, 93, 107, 0.7);
+}
+
+.rr-incident-beacon-wrap.warning .rr-incident-marker-core {
+  background: rgba(240, 154, 62, 0.25);
+  border: 1.5px solid #F09A3E;
+}
+.rr-incident-beacon-wrap.warning .rr-incident-inner-dot {
+  background: #F09A3E;
+}
+
+.rr-incident-beacon-wrap.watch .rr-incident-marker-core {
+  background: rgba(245, 158, 11, 0.25);
+  border: 1.5px solid #F59E0B;
+}
+.rr-incident-beacon-wrap.watch .rr-incident-inner-dot {
+  background: #F59E0B;
+}
+
+/* ============================================================
+   SELECTED DISASTER MARKER (Section 12: Target ◉ with stronger ring)
+   ============================================================ */
+
+.rr-incident-beacon-wrap.selected .rr-incident-marker-core {
+  width: 18px;
+  height: 18px;
+  background: rgba(13, 19, 27, 0.92);
+  border: 2px solid #63D7E5;
+  box-shadow: 0 0 0 2px rgba(99, 215, 229, 0.4), 0 0 14px rgba(0, 0, 0, 0.85);
+  transform: scale(1.1);
+}
+
+.rr-incident-beacon-wrap.selected.critical .rr-incident-marker-core {
+  border-color: #F05D6B;
+  box-shadow: 0 0 0 2.5px rgba(240, 93, 107, 0.42), 0 0 14px rgba(0, 0, 0, 0.85);
+}
+
+.rr-incident-beacon-wrap.selected.warning .rr-incident-marker-core {
+  border-color: #F09A3E;
+  box-shadow: 0 0 0 2.5px rgba(240, 154, 62, 0.42), 0 0 14px rgba(0, 0, 0, 0.85);
+}
+
+.rr-incident-beacon-wrap.selected.watch .rr-incident-marker-core {
+  border-color: #F59E0B;
+  box-shadow: 0 0 0 2.5px rgba(245, 158, 11, 0.42), 0 0 14px rgba(0, 0, 0, 0.85);
+}
+
+.rr-incident-beacon-wrap.selected .rr-incident-inner-dot {
+  width: 7px;
+  height: 7px;
+}
+
+.rr-incident-beacon-wrap.selected.critical .rr-incident-inner-dot {
+  background: #F05D6B;
+  box-shadow: 0 0 8px #F05D6B;
+}
+.rr-incident-beacon-wrap.selected.warning .rr-incident-inner-dot {
+  background: #F09A3E;
+  box-shadow: 0 0 8px #F09A3E;
+}
+.rr-incident-beacon-wrap.selected.watch .rr-incident-inner-dot {
+  background: #F59E0B;
+  box-shadow: 0 0 8px #F59E0B;
+}
+
+/* Subtle target ring pulse for selected incident */
+.rr-incident-selected-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  margin-top: -12px;
+  margin-left: -12px;
+  border-radius: 50%;
+  border: 1px solid #63D7E5;
+  pointer-events: none;
+  animation: rrSelectedTargetPulse 2.2s ease-out infinite;
+}
+
+.rr-incident-beacon-wrap.selected.critical .rr-incident-selected-pulse {
+  border-color: #F05D6B;
+}
+
+@keyframes rrSelectedTargetPulse {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+/* Floating Incident Label (Section 57: compact for overview, full for selected) */
+.rr-incident-tactical-label {
+  position: absolute;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(13, 19, 27, 0.94);
+  border: 1px solid rgba(130, 150, 170, 0.25);
+  border-radius: 4px;
+  padding: 2px 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.rr-incident-tactical-label.compact {
+  padding: 1.5px 6px;
+}
+
+.rr-incident-tactical-label.compact .rr-inc-badge {
+  display: none;
+}
+
+.rr-incident-tactical-label.full {
+  padding: 2px 8px;
+  border-color: rgba(99, 215, 229, 0.4);
+  background: rgba(13, 19, 27, 0.96);
+}
+
+.rr-incident-tactical-label.full .rr-inc-badge {
+  display: inline-block;
+}
+
+.rr-inc-badge-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #F05D6B;
+}
+
+.rr-inc-city {
+  font-family: var(--font-sans, 'Geist', sans-serif);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 0.02em;
+}
+
+.rr-inc-badge {
+  font-family: var(--font-mono, monospace);
+  font-size: 8px;
+  font-weight: 600;
+  color: #F05D6B;
+  background: rgba(240, 93, 107, 0.12);
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+/* Quick Tooltip on Hover (Section 08 & 58) */
+.rr-marker-quick-tooltip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-sans, 'Geist', sans-serif);
+  font-size: 10px;
+}
+
+.rr-marker-quick-tooltip .rr-qt-city {
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.rr-marker-quick-tooltip .rr-qt-type {
+  color: #CAD6E2;
+}
+
+.rr-marker-quick-tooltip .rr-qt-sev {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Emphasized Hazard Polygon when Selected (Section 13) */
+.rr-hazard-polygon.selected-hazard-zone {
+  filter: drop-shadow(0 0 5px rgba(99, 215, 229, 0.5));
+}
+
+/* ============================================================
+   INCIDENT DETAIL CARD (Sections 14, 15, 16, 17, 18)
+   ============================================================ */
+
+.rr-incident-detail-card {
+  position: absolute;
+  width: 292px;
+  background: #0D131B;
+  border: 1px solid rgba(130, 150, 170, 0.24);
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.68), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  z-index: 650;
+  pointer-events: auto;
+  user-select: none;
+  overflow: hidden;
+}
+
+.rr-incident-detail-card.open {
+  animation: rrIncidentCardEnter 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.rr-incident-detail-card.closing {
+  animation: rrIncidentCardExit 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes rrIncidentCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rrIncidentCardExit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+.rr-inc-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.rr-inc-card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2.5px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+  border: 1px solid transparent;
+}
+
+.rr-inc-card-badge-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.rr-inc-card-close-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #8B98A7;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+}
+
+.rr-inc-card-close-btn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.rr-inc-card-body {
+  padding: 10px 12px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rr-inc-card-location {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: -0.01em;
+}
+
+.rr-inc-card-corridor {
+  font-size: 11px;
+  color: #8B98A7;
+  margin-top: -5px;
+  line-height: 1.35;
+}
+
+.rr-inc-card-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.rr-inc-metric-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.rr-inc-metric-label {
+  font-size: 8.5px;
+  font-weight: 600;
+  color: #8B98A7;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.rr-inc-metric-val {
+  font-size: 13px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-top: 2px;
+}
+
+.rr-inc-card-narrative {
+  font-size: 10.5px;
+  color: #CAD6E2;
+  line-height: 1.4;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.28);
+  border-radius: 4px;
+  border-left: 2.5px solid #F05D6B;
+}
+
+.rr-inc-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 9.5px;
+  color: #8B98A7;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.rr-inc-footer-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #CAD6E2;
+}
+
+.rr-pulse-dot-green {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #36C98F;
+  box-shadow: 0 0 5px rgba(54, 201, 143, 0.6);
+}
+
+.rr-inc-footer-coords {
+  color: #63D7E5;
+  font-size: 9px;
+}
+
+/* ============================================================
+   SENSOR TELEMETRY NODES (Zoom >= 7)
+   ============================================================ */
+
+.rr-sensor-marker-container {
+  background: transparent !important;
+  border: none !important;
+}
+
+.rr-sensor-node {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.rr-sensor-core {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid #080B10;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  transition: transform 180ms ease;
+}
+
+.rr-sensor-node:hover .rr-sensor-core {
+  transform: scale(1.4);
+}
+
+.rr-sensor-node.online .rr-sensor-core { background: #36C98F; }
+.rr-sensor-node.warning .rr-sensor-core { background: #F09A3E; }
+.rr-sensor-node.critical .rr-sensor-core { background: #F05D6B; }
+.rr-sensor-node.offline .rr-sensor-core { background: #6C7A89; }
+
+.rr-sensor-node.selected .rr-sensor-core {
+  outline: 2px solid #63D7E5;
+  outline-offset: 1px;
+}
+
+.rr-sensor-tooltip {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(13, 19, 27, 0.94);
+  border: 1px solid rgba(130, 150, 170, 0.22);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 8.5px;
+  font-weight: 500;
+  color: #F2F5F7;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.rr-sensor-node:hover .rr-sensor-tooltip,
+.rr-sensor-node.selected .rr-sensor-tooltip {
+  opacity: 1;
+}
+
+/* ============================================================
+   REGIONAL SENSOR CLUSTERS (Zoom < 7)
+   ============================================================ */
+
+.rr-cluster-marker-container {
+  background: transparent !important;
+  border: none !important;
+}
+
+.rr-sensor-cluster-pill {
+  background: rgba(13, 19, 27, 0.92);
+  border: 1px solid rgba(99, 215, 229, 0.35);
+  border-radius: 12px;
+  padding: 3px 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.rr-sensor-cluster-pill:hover {
+  background: #17202B;
+  border-color: #63D7E5;
+  transform: translateY(-1px);
+}
+
+.rr-cluster-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #63D7E5;
+}
+
+.rr-sensor-cluster-pill.critical .rr-cluster-dot {
+  background-color: #F05D6B;
+}
+
+.rr-cluster-count {
+  font-size: 11px;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.rr-cluster-name {
+  font-family: var(--font-sans, 'Geist', sans-serif);
+  font-size: 9.5px;
+  font-weight: 500;
+  color: #8B98A7;
+}
+
+/* ============================================================
+   CARTOGRAPHIC DUAL LEGEND (BOTTOM-LEFT)
+   ============================================================ */
+
 .rr-map-legend {
   position: absolute;
-  bottom: var(--space-12);
-  left: var(--space-12);
-  background: var(--surface-overlay);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--border-obsidian);
-  border-radius: var(--radius-sm);
-  padding: 4px 10px;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(13, 19, 27, 0.94);
+  border: 1px solid rgba(130, 150, 170, 0.18);
+  border-radius: 6px;
+  padding: 5px 11px;
   display: flex;
   align-items: center;
   gap: 10px;
   font-size: 10px;
-  color: var(--text-secondary);
+  color: #8B98A7;
   z-index: 500;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  user-select: none;
 }
 
-.rr-legend-label {
-  font-weight: 550;
-  color: var(--text-primary);
+.rr-legend-group {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.rr-legend-group-title {
+  font-weight: 650;
+  color: #F2F5F7;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .rr-legend-item {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
 }
 
-/* Sensor Operational Nodes */
-.rr-marker-container {
+.rr-legend-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.rr-legend-dot.critical { background: #F05D6B; }
+.rr-legend-dot.warning { background: #F09A3E; }
+.rr-legend-dot.watch { background: #F59E0B; }
+.rr-legend-dot.safe { background: #36C98F; }
+.rr-legend-dot.offline { background: #6C7A89; }
+
+.rr-legend-divider {
+  width: 1px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Tile Fallback Notice */
+.rr-map-tile-fallback {
+  position: absolute;
+  bottom: 12px;
+  right: 120px;
+  background: rgba(240, 154, 62, 0.15);
+  border: 1px solid rgba(240, 154, 62, 0.35);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 10px;
+  color: #F09A3E;
+  z-index: 500;
+}
+
+/* ============================================================
+   LEAFLET OVERRIDES: DARK THEME & TOOLTIPS
+   ============================================================ */
+
+.leaflet-tooltip-dark {
+  background: rgba(13, 19, 27, 0.95) !important;
+  border: 1px solid rgba(130, 150, 170, 0.25) !important;
+  border-radius: 4px !important;
+  color: #F2F5F7 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+}
+
+.leaflet-tooltip-dark::before {
+  border-top-color: rgba(13, 19, 27, 0.95) !important;
+}
+
+.rr-leaflet-popup-dark .leaflet-popup-content-wrapper {
   background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
   border: none !important;
 }
 
-.rr-map-node {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  position: relative;
+.rr-leaflet-popup-dark .leaflet-popup-content {
+  margin: 0 !important;
+  line-height: inherit !important;
 }
 
-.rr-node-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  border: 1.5px solid var(--bg-obsidian);
-  transition: transform var(--trans-fast);
+.rr-leaflet-popup-dark .leaflet-popup-tip {
+  background: #0D131B !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
-.rr-map-node:hover .rr-node-dot {
-  transform: scale(1.35);
+.rr-leaflet-popup-dark a.leaflet-popup-close-button {
+  color: #8B98A7 !important;
+  padding: 6px !important;
 }
 
-.rr-node-dot.online { background: var(--semantic-safe); }
-.rr-node-dot.warning { background: var(--semantic-warning); }
-.rr-node-dot.critical { background: var(--semantic-critical); }
-.rr-node-dot.offline { background: var(--text-muted); }
-
-.rr-map-node.selected .rr-node-dot {
-  outline: 2px solid var(--signal-cyan);
-  outline-offset: 1px;
+.rr-leaflet-popup-dark a.leaflet-popup-close-button:hover {
+  color: #FFFFFF !important;
 }
 
-/* Hover-Only Location Labels (Always visible for active incident Vadodara) */
-.rr-node-tag {
-  margin-top: 2px;
-  background: rgba(8, 11, 16, 0.94);
-  border: 1px solid var(--border-obsidian);
-  border-radius: 2px;
-  padding: 0 3px;
-  font-size: 8.5px;
-  font-weight: 500;
-  color: var(--text-primary);
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(2px);
-  transition: opacity var(--trans-fast), transform var(--trans-fast);
+/* Compact Leaflet Attribution */
+.leaflet-container .leaflet-control-attribution {
+  background: rgba(13, 19, 27, 0.8) !important;
+  color: #6C7A89 !important;
+  font-size: 8.5px !important;
+  border-radius: 3px 0 0 0;
+  padding: 1px 6px !important;
 }
 
-.rr-map-node:hover .rr-node-tag,
-.rr-map-node.selected .rr-node-tag,
-.rr-map-node.incident .rr-node-tag {
-  opacity: 1;
-  transform: translateY(0);
+.leaflet-container .leaflet-control-attribution a {
+  color: #8B98A7 !important;
+}
+
+/* ============================================================
+   ACCESSIBILITY & PREFERS-REDUCED-MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .rr-incident-radar-pulse {
+    animation: none !important;
+    opacity: 0.4 !important;
+  }
+  .rr-layers-dropdown {
+    animation: none !important;
+  }
 }

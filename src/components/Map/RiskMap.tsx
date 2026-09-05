@@ -5,37 +5,67 @@ import { SensorData, HazardZone, HazardType } from '../../types';
 import { HazardLayersControl } from './HazardLayersControl';
 import { MapControls } from './MapControls';
 import { MapLegend } from './MapLegend';
+import { IncidentDetailCard } from './IncidentDetailCard';
 import { renderSensorPopupHtml } from './SensorPopup';
 import './RiskMap.css';
 
 interface RiskMapProps {
   sensors: SensorData[];
   hazardZones: HazardZone[];
+  selectedIncidentId: string | null;
+  onSelectIncident: (id: string | null) => void;
   selectedSensorId: string | null;
   onSelectSensor: (sensor: SensorData | null) => void;
-  focusedLocation?: { lat: number; lng: number } | null;
   highlightedHazardType?: HazardType | null;
 }
+
+type MapInteractionState = 'OVERVIEW' | 'FOCUSING' | 'INCIDENT_SELECTED' | 'RETURNING';
 
 export const RiskMap: React.FC<RiskMapProps> = ({
   sensors,
   hazardZones,
+  selectedIncidentId,
+  onSelectIncident,
   selectedSensorId,
   onSelectSensor,
-  focusedLocation,
   highlightedHazardType,
 }) => {
+  const frameRef = useRef<HTMLDivElement>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
-  const markersLayerRef = useRef<L.LayerGroup | null>(null);
+
+  // Operational Layer Groups
   const hazardsLayerRef = useRef<L.LayerGroup | null>(null);
+  const incidentsLayerRef = useRef<L.LayerGroup | null>(null);
+  const sensorsLayerRef = useRef<L.LayerGroup | null>(null);
   const markersMapRef = useRef<Map<string, L.Marker>>(new Map());
 
-  // India Initial View Coordinates (Clean Operational Framing)
-  const INDIA_CENTER: [number, number] = [22.0, 79.5];
-  const INDIA_ZOOM = 4.7;
+  // Section 03: Default camera must provide national/regional operational context
+  const INDIA_VIEW = { center: [22.0, 79.5] as [number, number], zoom: 4.8 };
 
-  // Active Hazard Layers State
+  // Camera State Preservation (Sections 20 & 21)
+  const overviewCameraRef = useRef<{ center: [number, number]; zoom: number }>({
+    center: INDIA_VIEW.center,
+    zoom: INDIA_VIEW.zoom,
+  });
+
+  // State Machine: OVERVIEW → FOCUSING → INCIDENT_SELECTED → RETURNING → OVERVIEW (Section 47)
+  const [interactionState, setInteractionState] = useState<MapInteractionState>('OVERVIEW');
+  const interactionStateRef = useRef<MapInteractionState>('OVERVIEW');
+  interactionStateRef.current = interactionState;
+
+  const selectedIncidentIdRef = useRef<string | null>(selectedIncidentId);
+  selectedIncidentIdRef.current = selectedIncidentId;
+
+  // Collision-Aware Card Positioning (Sections 15 & 16)
+  const [cardPosition, setCardPosition] = useState<{ left: number; top: number }>({ left: 30, top: 70 });
+  const [isClosingCard, setIsClosingCard] = useState<boolean>(false);
+  const closeTimeoutRef = useRef<number | null>(null);
+
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [tileError, setTileError] = useState<boolean>(false);
+
+  // Active Hazard Layers State (All 6 core disaster categories preserved on incident close, Section 44)
   const [activeLayers, setActiveLayers] = useState<Record<HazardType, boolean>>({
     flood: true,
     heavy_rainfall: true,
@@ -52,52 +82,253 @@ export const RiskMap: React.FC<RiskMapProps> = ({
     }));
   };
 
-  // Initialize Map
+  // ---------------------------------------------------------------------------
+  // COLLISION-AWARE POSITIONING ENGINE (Sections 15 & 16)
+  // ---------------------------------------------------------------------------
+  const updateCardPosition = useCallback(() => {
+    if (!mapRef.current || !frameRef.current || !selectedIncidentIdRef.current) return;
+
+    const targetZone = hazardZones.find((z) => z.id === selectedIncidentIdRef.current);
+    if (!targetZone) return;
+
+    const map = mapRef.current;
+    const container = frameRef.current;
+    const containerRect = container.getBoundingClientRect();
+    const markerPoint = map.latLngToContainerPoint(targetZone.center);
+
+    const cardWidth = 292;
+    const cardHeight = 224;
+    const margin = 14;
+    const topSafe = 52; // Clearance below the HUD bar
+    const bottomSafe = 52; // Clearance above the bottom-left legend
+
+    // Position to the right of marker by default
+    let left = markerPoint.x + 32;
+    let top = markerPoint.y - Math.round(cardHeight / 2);
+
+    // If overflowing right, flip to left of marker
+    if (left + cardWidth > containerRect.width - margin) {
+      left = markerPoint.x - cardWidth - 32;
+    }
+
+    // Horizontal containment within map frame
+    if (left < margin) {
+      left = margin;
+    } else if (left + cardWidth > containerRect.width - margin) {
+      left = containerRect.width - cardWidth - margin;
+    }
+
+    // Vertical containment within map frame
+    if (top < topSafe) {
+      top = topSafe;
+    } else if (top + cardHeight > containerRect.height - margin) {
+      top = containerRect.height - cardHeight - margin;
+    }
+
+    // Avoid colliding with bottom-left cartographic legend (left ~360px, bottom ~52px)
+    if (left < 360 && top + cardHeight > containerRect.height - bottomSafe) {
+      top = containerRect.height - cardHeight - bottomSafe - 6;
+    }
+
+    setCardPosition({ left: Math.round(left), top: Math.round(top) });
+  }, [hazardZones]);
+
+  // ---------------------------------------------------------------------------
+  // INCIDENT SELECTION & CLEARANCE (Single Source of Truth, Sections 28 & 29)
+  // ---------------------------------------------------------------------------
+  const selectIncident = useCallback(
+    (id: string) => {
+      if (!mapRef.current) return;
+      const targetZone = hazardZones.find((z) => z.id === id);
+      if (!targetZone) return;
+
+      // Prevent duplicate transitions
+      if (selectedIncidentIdRef.current === id && interactionStateRef.current === 'INCIDENT_SELECTED') {
+        return;
+      }
+
+      // Preserve current user camera before flying to incident if in overview (Section 21)
+      if (interactionStateRef.current === 'OVERVIEW') {
+        const c = mapRef.current.getCenter();
+        overviewCameraRef.current = {
+          center: [c.lat, c.lng],
+          zoom: mapRef.current.getZoom(),
+        };
+      }
+
+      // Cancel any pending return timeout
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+        closeTimeoutRef.current = null;
+      }
+      setIsClosingCard(false);
+
+      setInteractionState('FOCUSING');
+      onSelectIncident(id);
+
+      // Section 10: Smooth flyTo, duration 750ms (within 600-900ms requirement)
+      mapRef.current.flyTo(targetZone.center, 10.5, {
+        duration: 0.75,
+        easeLinearity: 0.25,
+      });
+
+      // Synchronize card display after camera begins focusing (Section 40)
+      setTimeout(() => {
+        updateCardPosition();
+        setInteractionState('INCIDENT_SELECTED');
+      }, 350);
+    },
+    [hazardZones, onSelectIncident, updateCardPosition]
+  );
+
+  const clearIncidentSelection = useCallback(() => {
+    if (!mapRef.current || !selectedIncidentIdRef.current) return;
+
+    setIsClosingCard(true);
+    setInteractionState('RETURNING');
+
+    // Section 20: Smooth camera return to saved overview camera (500-800ms)
+    mapRef.current.flyTo(overviewCameraRef.current.center, overviewCameraRef.current.zoom, {
+      duration: 0.72,
+      easeLinearity: 0.25,
+    });
+
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+
+    // Section 59: Card closes (180-220ms), selection clears, all markers restored
+    closeTimeoutRef.current = window.setTimeout(() => {
+      setIsClosingCard(false);
+      onSelectIncident(null);
+      setInteractionState('OVERVIEW');
+      closeTimeoutRef.current = null;
+    }, 200);
+  }, [onSelectIncident]);
+
+  // ---------------------------------------------------------------------------
+  // 1. INITIALIZE MAP (Sections 02, 03, 07: Starts at India Overview, Clean, No Popups)
+  // ---------------------------------------------------------------------------
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
+    // Section 03 & 24: Starts cleanly at India Overview with NO auto-selection
     const map = L.map(mapContainerRef.current, {
-      center: INDIA_CENTER,
-      zoom: INDIA_ZOOM,
+      center: INDIA_VIEW.center,
+      zoom: INDIA_VIEW.zoom,
       zoomControl: false,
       attributionControl: true,
-      minZoom: 4,
+      minZoom: 3.8,
       maxZoom: 16,
+      zoomAnimation: true,
     });
 
-    // Dark Gray Canvas Base Tile
-    L.tileLayer(
+    // Dark Gray Canvas Base Tile Layer (Esri)
+    const baseTile = L.tileLayer(
       'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
       {
         maxZoom: 16,
         attribution:
           '&copy; <a href="https://www.esri.com" target="_blank" rel="noreferrer">Esri</a>, OpenStreetMap',
       }
-    ).addTo(map);
+    );
 
-    // Subtle Reference Layer (Lower opacity for calm geography)
+    baseTile.on('tileerror', () => {
+      setTileError(true);
+    });
+
+    baseTile.addTo(map);
+
+    // Subtle Reference Layer
     L.tileLayer(
       'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
       {
         maxZoom: 16,
-        opacity: 0.65,
+        opacity: 0.62,
       }
     ).addTo(map);
 
+    // Operational Layers
     const hazardsGroup = L.layerGroup().addTo(map);
-    const markersGroup = L.layerGroup().addTo(map);
+    const incidentsGroup = L.layerGroup().addTo(map);
+    const sensorsGroup = L.layerGroup().addTo(map);
 
     hazardsLayerRef.current = hazardsGroup;
-    markersLayerRef.current = markersGroup;
+    incidentsLayerRef.current = incidentsGroup;
+    sensorsLayerRef.current = sensorsGroup;
     mapRef.current = map;
+
+    // Preserve user manual overview camera changes (Section 21)
+    map.on('moveend', () => {
+      if (interactionStateRef.current === 'OVERVIEW' && !selectedIncidentIdRef.current) {
+        const c = map.getCenter();
+        overviewCameraRef.current = {
+          center: [c.lat, c.lng],
+          zoom: map.getZoom(),
+        };
+      }
+    });
+
+    // Reposition card when user pans/zooms while focused
+    map.on('move', () => {
+      if (selectedIncidentIdRef.current) {
+        updateCardPosition();
+      }
+    });
+
+    // Section 37: Clicking empty map canvas clears selection & restores overview
+    map.on('click', () => {
+      if (selectedIncidentIdRef.current) {
+        clearIncidentSelection();
+      }
+    });
 
     return () => {
       map.remove();
       mapRef.current = null;
     };
-  }, []);
+  }, [clearIncidentSelection, updateCardPosition]);
 
-  // Update Hazard Layer Polygons
+  // Container Resize Observer
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      mapRef.current?.invalidateSize({ pan: false });
+      if (selectedIncidentIdRef.current) {
+        updateCardPosition();
+      }
+    });
+
+    resizeObserver.observe(mapContainerRef.current);
+    return () => resizeObserver.disconnect();
+  }, [updateCardPosition]);
+
+  // Section 36: Escape Key clears incident selection and restores overview
+  useEffect(() => {
+    if (!selectedIncidentId) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        clearIncidentSelection();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedIncidentId, clearIncidentSelection]);
+
+  // React to external selectedIncidentId changes (e.g. FOCUS GIS from Active Incidents rail)
+  useEffect(() => {
+    if (selectedIncidentId && selectedIncidentId !== selectedIncidentIdRef.current) {
+      selectIncident(selectedIncidentId);
+    }
+  }, [selectedIncidentId, selectIncident]);
+
+  // ---------------------------------------------------------------------------
+  // 2. RENDER HAZARD POLYGONS (Section 13: Emphasized zone when selected)
+  // ---------------------------------------------------------------------------
   useEffect(() => {
     const group = hazardsLayerRef.current;
     if (!group) return;
@@ -109,140 +340,280 @@ export const RiskMap: React.FC<RiskMapProps> = ({
       heavy_rainfall: '#63D7E5',
       landslide: '#F59E0B',
       extreme_temperature: '#EF4444',
-      air_pollution: '#78716C',
+      air_pollution: '#8B98A7',
       forest_fire: '#F05D6B',
     };
 
     hazardZones.forEach((zone) => {
       if (!activeLayers[zone.type]) return;
 
+      const isSelected = zone.id === selectedIncidentId;
       const isHighlighted = highlightedHazardType === zone.type;
-      const color = layerColorMap[zone.type] || '#63D7E5';
-      const fillOpacity = isHighlighted ? 0.30 : 0.16;
+      const baseColor = layerColorMap[zone.type] || '#63D7E5';
+      const isCritical = zone.severity === 'critical';
 
+      // Section 13: Selected zone becomes slightly more visible with subtle dashed perimeter
       const polygon = L.polygon(zone.coordinates, {
-        color: color,
-        weight: isHighlighted ? 2 : 1.2,
-        dashArray: zone.severity === 'critical' ? '4, 4' : undefined,
-        fillColor: color,
-        fillOpacity: fillOpacity,
+        color: isSelected ? '#63D7E5' : isCritical ? '#63D7E5' : baseColor,
+        weight: isSelected ? 2.4 : isHighlighted ? 2.0 : isCritical ? 1.6 : 1.1,
+        dashArray: isSelected || isCritical ? '5, 5' : undefined,
+        fillColor: baseColor,
+        fillOpacity: isSelected ? 0.34 : isHighlighted ? 0.28 : isCritical ? 0.20 : 0.14,
+        className: `rr-hazard-polygon ${isCritical ? 'critical-inundation' : ''} ${
+          isSelected ? 'selected-hazard-zone' : ''
+        }`,
       });
 
       polygon.bindTooltip(
-        `<div style="font-family:var(--font-sans); font-size:11px; padding:2px;">
-          <div style="font-weight:600; color:#F2F5F7;">${zone.title}</div>
-          <div style="font-size:10px; color:${color}; text-transform:uppercase; margin-top:2px;">
+        `<div style="font-family:var(--font-sans); font-size:11px; padding:3px 5px;">
+          <div style="font-weight:700; color:#FFFFFF; letter-spacing:-0.01em;">${zone.title}</div>
+          <div style="font-size:10px; color:${baseColor}; text-transform:uppercase; margin-top:2px; font-weight:600;">
             ${zone.severity} · ${zone.areaKm2} km² · ${zone.location}, ${zone.state}
           </div>
         </div>`,
         { sticky: true, className: 'leaflet-tooltip-dark' }
       );
 
+      // Explicit click triggers Incident Focus Mode
+      polygon.on('click', (e) => {
+        L.DomEvent.stopPropagation(e);
+        selectIncident(zone.id);
+      });
+
       polygon.addTo(group);
     });
-  }, [hazardZones, activeLayers, highlightedHazardType]);
+  }, [hazardZones, activeLayers, highlightedHazardType, selectedIncidentId, selectIncident]);
 
-  // Update Sensor Markers with Hover-Only Labels (except Vadodara Active Incident)
+  // ---------------------------------------------------------------------------
+  // 3. RENDER TACTICAL HAZARD DISASTER MARKERS (Sections 05, 06, 08, 12, 57, 58)
+  // ---------------------------------------------------------------------------
   useEffect(() => {
-    const group = markersLayerRef.current;
+    const group = incidentsLayerRef.current;
     if (!group) return;
 
     group.clearLayers();
+
+    hazardZones.forEach((zone) => {
+      if (!activeLayers[zone.type]) return;
+
+      const isSelected = zone.id === selectedIncidentId;
+      const isCritical = zone.severity === 'critical';
+      const isWarning = zone.severity === 'warning';
+      const sevClass = isCritical ? 'critical' : isWarning ? 'warning' : 'watch';
+
+      // Section 06 & 12: Normal (●) vs Selected (◉ target ring)
+      const markerHtml = `
+        <div class="rr-incident-beacon-wrap ${sevClass} ${isSelected ? 'selected' : ''}">
+          ${isCritical && !isSelected ? '<div class="rr-incident-radar-pulse"></div>' : ''}
+          ${isSelected ? '<div class="rr-incident-selected-pulse"></div>' : ''}
+          <div class="rr-incident-marker-core">
+            <div class="rr-incident-inner-dot"></div>
+          </div>
+          ${
+            isSelected
+              ? `<div class="rr-incident-tactical-label full">
+                  <span class="rr-inc-badge-dot"></span>
+                  <span class="rr-inc-city">${zone.location.toUpperCase()}</span>
+                  <span class="rr-inc-badge">${zone.severity.toUpperCase()} · ${zone.type
+                  .toUpperCase()
+                  .replace('_', ' ')}</span>
+                </div>`
+              : isCritical
+              ? `<div class="rr-incident-tactical-label compact">
+                  <span class="rr-inc-badge-dot"></span>
+                  <span class="rr-inc-city">${zone.location.toUpperCase()}</span>
+                </div>`
+              : ''
+          }
+        </div>
+      `;
+
+      const incidentIcon = L.divIcon({
+        className: 'rr-incident-icon-container',
+        html: markerHtml,
+        iconSize: [120, 36],
+        iconAnchor: [60, 18],
+      });
+
+      const marker = L.marker(zone.center, {
+        icon: incidentIcon,
+        zIndexOffset: isSelected ? 900 : 700,
+      });
+
+      // Section 08 & 58: Hover shows lightweight tooltip, NEVER full incident card
+      marker.bindTooltip(
+        `<div class="rr-marker-quick-tooltip">
+          <span class="rr-qt-city">${zone.location}</span>
+          <span class="rr-qt-type">· ${zone.type.replace('_', ' ')}</span>
+          <span class="rr-qt-sev" style="color:${isCritical ? '#F05D6B' : isWarning ? '#F09A3E' : '#F59E0B'}">
+            (${zone.severity.toUpperCase()})
+          </span>
+        </div>`,
+        {
+          direction: 'top',
+          offset: [0, -12],
+          className: 'leaflet-tooltip-dark',
+          opacity: 0.96,
+        }
+      );
+
+      // Section 09: Explicit click enters Incident Focus Mode
+      marker.on('click', (e) => {
+        L.DomEvent.stopPropagation(e);
+        selectIncident(zone.id);
+      });
+
+      marker.addTo(group);
+    });
+  }, [hazardZones, activeLayers, selectedIncidentId, selectIncident]);
+
+  // ---------------------------------------------------------------------------
+  // 4. RENDER DISTRIBUTED OPERATIONAL SENSOR NODES (Section 05: Ahmedabad, Surat, etc.)
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    const sensorsGroup = sensorsLayerRef.current;
+    if (!sensorsGroup) return;
+
+    sensorsGroup.clearLayers();
     markersMapRef.current.clear();
 
     sensors.forEach((sensor) => {
       const isSelected = sensor.id === selectedSensorId;
-      const isIncident = sensor.id === 's-1'; // Vadodara active incident
 
-      const markerHtml = `
-        <div class="rr-map-node ${isSelected ? 'selected' : ''} ${isIncident ? 'incident' : ''}">
-          <div class="rr-node-dot ${sensor.status}"></div>
-          <div class="rr-node-tag font-mono">${sensor.location}</div>
+      const sensorHtml = `
+        <div class="rr-sensor-node ${sensor.status} ${isSelected ? 'selected' : ''}">
+          <div class="rr-sensor-core"></div>
+          <div class="rr-sensor-tooltip font-mono">${sensor.location} · ${sensor.code}</div>
         </div>
       `;
 
-      const customIcon = L.divIcon({
-        className: 'rr-marker-container',
-        html: markerHtml,
-        iconSize: [46, 26],
-        iconAnchor: [23, 5],
-        popupAnchor: [0, -8],
+      const sensorIcon = L.divIcon({
+        className: 'rr-sensor-marker-container',
+        html: sensorHtml,
+        iconSize: [20, 20],
+        iconAnchor: [10, 10],
       });
 
-      const marker = L.marker([sensor.lat, sensor.lng], { icon: customIcon });
-
-      marker.bindPopup(renderSensorPopupHtml(sensor), {
-        maxWidth: 270,
-        autoPan: true,
-        autoPanPaddingTopLeft: L.point(15, 55),
-        autoPanPaddingBottomRight: L.point(15, 35),
+      const marker = L.marker([sensor.lat, sensor.lng], {
+        icon: sensorIcon,
+        zIndexOffset: isSelected ? 650 : 500,
       });
 
-      marker.on('click', () => {
-        onSelectSensor(sensor);
+      // Hover shows clean lightweight telemetry tooltip
+      marker.bindTooltip(
+        `<div class="rr-marker-quick-tooltip">
+          <span class="rr-qt-city">${sensor.location}</span>
+          <span class="rr-qt-type">· ${sensor.name}</span>
+        </div>`,
+        {
+          direction: 'top',
+          offset: [0, -10],
+          className: 'leaflet-tooltip-dark',
+          opacity: 0.96,
+        }
+      );
+
+      marker.on('click', (e) => {
+        L.DomEvent.stopPropagation(e);
+        // If clicking Vadodara sensor, focus Vadodara incident
+        if (sensor.id === 's-1') {
+          selectIncident('hz-vadodara-flood');
+        } else {
+          onSelectSensor(sensor);
+        }
       });
 
-      marker.addTo(group);
+      marker.addTo(sensorsGroup);
       markersMapRef.current.set(sensor.id, marker);
-
-      if (isSelected) {
-        setTimeout(() => marker.openPopup(), 100);
-      }
     });
-  }, [sensors, selectedSensorId, onSelectSensor]);
+  }, [sensors, selectedSensorId, onSelectSensor, selectIncident]);
 
-  // Handle external focus (e.g. clicking FOCUS GIS action)
-  useEffect(() => {
-    if (focusedLocation && mapRef.current) {
-      mapRef.current.flyTo([focusedLocation.lat, focusedLocation.lng], 9.5, {
-        duration: 1.2,
-      });
-    }
-  }, [focusedLocation]);
-
-  // Navigation handlers
+  // ---------------------------------------------------------------------------
+  // CONTROLS & NAVIGATION ACTIONS
+  // ---------------------------------------------------------------------------
   const handleZoomIn = useCallback(() => mapRef.current?.zoomIn(), []);
   const handleZoomOut = useCallback(() => mapRef.current?.zoomOut(), []);
-  const handleResetIndia = useCallback(() => {
-    mapRef.current?.flyTo(INDIA_CENTER, INDIA_ZOOM, { duration: 1.0 });
-  }, []);
 
+  // Section 22: Reset View clears selection & returns smoothly to Overview
+  const handleResetIndia = useCallback(() => {
+    overviewCameraRef.current = { center: INDIA_VIEW.center, zoom: INDIA_VIEW.zoom };
+    clearIncidentSelection();
+    mapRef.current?.flyTo(INDIA_VIEW.center, INDIA_VIEW.zoom, { duration: 0.8, easeLinearity: 0.25 });
+  }, [INDIA_VIEW.center, INDIA_VIEW.zoom, clearIncidentSelection]);
+
+  // Locate Primary Incident (Vadodara)
   const handleLocateVadodara = useCallback(() => {
-    mapRef.current?.flyTo([22.3072, 73.1812], 10.5, { duration: 1.2 });
-    const vadodaraMarker = markersMapRef.current.get('s-1');
-    if (vadodaraMarker) {
-      setTimeout(() => vadodaraMarker.openPopup(), 600);
+    selectIncident('hz-vadodara-flood');
+  }, [selectIncident]);
+
+  const handleToggleFullscreen = useCallback(() => {
+    if (!frameRef.current) return;
+    if (!document.fullscreenElement) {
+      frameRef.current.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {});
+    } else {
+      document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {});
     }
   }, []);
 
+  const selectedZone = hazardZones.find((z) => z.id === selectedIncidentId);
+
   return (
-    <div className="rr-riskmap-frame" aria-label="National Multi-Hazard GIS Map">
-      {/* Map Canvas */}
+    <div
+      ref={frameRef}
+      className={`rr-riskmap-frame ${isFullscreen ? 'fullscreen' : ''}`}
+      aria-label="National Multi-Hazard GIS Map"
+    >
+      {/* Real Interactive Map Canvas */}
       <div ref={mapContainerRef} className="rr-riskmap-canvas" />
 
-      {/* Floating HUD Top */}
+      {/* Floating HUD Top Bar */}
       <div className="rr-map-hud-top">
-        <div className="rr-map-title-badge">
-          <Shield size={13} className="rr-hud-shield-icon" />
-          <span>National Multi-Hazard Theatre <strong>(India)</strong></span>
+        {/* Context Badge (Top-Left) */}
+        <div className="rr-map-title-badge" role="status">
+          <Shield size={12} className="rr-hud-shield-icon" aria-hidden="true" />
+          <div className="rr-map-badge-text">
+            <span>National Multi-Hazard Theatre</span>
+            <span className="rr-map-badge-sub">
+              {selectedZone
+                ? `${selectedZone.location} · ${selectedZone.type.replace('_', ' ')} Focus`
+                : 'National Operational View'}
+            </span>
+          </div>
         </div>
 
+        {/* Action Controls (Top-Right) */}
         <div className="rr-map-hud-actions">
-          <HazardLayersControl
-            activeLayers={activeLayers}
-            onToggleLayer={handleToggleLayer}
-          />
+          <HazardLayersControl activeLayers={activeLayers} onToggleLayer={handleToggleLayer} />
           <MapControls
             onZoomIn={handleZoomIn}
             onZoomOut={handleZoomOut}
             onResetView={handleResetIndia}
             onLocateIncident={handleLocateVadodara}
+            onToggleFullscreen={handleToggleFullscreen}
+            isFullscreen={isFullscreen}
           />
         </div>
       </div>
 
-      {/* Map Legend */}
+      {/* Floating Contextual Incident Detail Card (Section 14, 15, 16, 17, 18: ONLY on explicit selection) */}
+      {selectedZone && (
+        <IncidentDetailCard
+          zone={selectedZone}
+          onClose={clearIncidentSelection}
+          position={cardPosition}
+          isClosing={isClosingCard}
+        />
+      )}
+
+      {/* Cartographic Dual Legend (Bottom-Left) */}
       <MapLegend />
+
+      {/* Tile Error Fallback Notice */}
+      {tileError && (
+        <div className="rr-map-tile-fallback">
+          <span>GIS Tile Service Degraded · Operating on Cached Telemetry</span>
+        </div>
+      )}
     </div>
   );
 };

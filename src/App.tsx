@@ -18,21 +18,23 @@ import './App.css';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
+  const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
   const [selectedSensor, setSelectedSensor] = useState<SensorData | null>(null);
-  const [focusedLocation, setFocusedLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [highlightedHazard, setHighlightedHazard] = useState<HazardType | null>(null);
 
-  // When an alert or focus action is triggered: fly map to coordinates & highlight hazard
+  // When an alert or focus action is triggered from the intelligence rail:
   const handleSelectAlert = (alert: AlertItem) => {
-    setFocusedLocation({ lat: alert.lat, lng: alert.lng });
     setHighlightedHazard(alert.hazardType);
 
-    // If alert matches a sensor (e.g. Vadodara), select that sensor
-    const matchingSensor = MOCK_SENSORS.find(
-      (s) => Math.abs(s.lat - alert.lat) < 0.05 && Math.abs(s.lng - alert.lng) < 0.05
+    // Single source of truth: match alert to corresponding hazard zone (Sections 27, 28, 29)
+    const matchingZone = MOCK_HAZARD_ZONES.find(
+      (z) =>
+        z.location.toLowerCase().includes(alert.location.toLowerCase()) ||
+        alert.location.toLowerCase().includes(z.location.toLowerCase()) ||
+        z.type === alert.hazardType
     );
-    if (matchingSensor) {
-      setSelectedSensor(matchingSensor);
+    if (matchingZone) {
+      setSelectedIncidentId(matchingZone.id);
     }
   };
 
@@ -62,9 +64,10 @@ export const App: React.FC = () => {
               <RiskMap
                 sensors={MOCK_SENSORS}
                 hazardZones={MOCK_HAZARD_ZONES}
+                selectedIncidentId={selectedIncidentId}
+                onSelectIncident={setSelectedIncidentId}
                 selectedSensorId={selectedSensor?.id || null}
                 onSelectSensor={setSelectedSensor}
-                focusedLocation={focusedLocation}
                 highlightedHazardType={highlightedHazard}
               />
             </section>
