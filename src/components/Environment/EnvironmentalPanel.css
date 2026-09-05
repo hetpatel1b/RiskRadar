@@ -5,8 +5,8 @@
 
 .rr-env-deck {
   background: var(--surface-secondary);
-  border: 1px solid var(--border-obsidian);
-  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-major);
+  border-radius: var(--radius-major);
   padding: 12px 18px 13px 18px;
   display: flex;
   flex-direction: column;
@@ -118,8 +118,8 @@
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   background: var(--surface-elevated);
-  border: 1px solid var(--border-obsidian);
-  border-radius: 7px;
+  border: 1px solid var(--border-inner);
+  border-radius: var(--radius-inner);
   flex: 1;
   min-height: 0;
   width: 100%;
@@ -130,7 +130,7 @@
 /* Individual Measurement Zone */
 .rr-telemetry-zone {
   padding: 8px 12px 7px 12px;
-  border-right: 1px solid rgba(130, 150, 170, 0.12);
+  border-right: 1px solid var(--border-divider);
   display: flex;
   flex-direction: column;
   justify-content: space-between;

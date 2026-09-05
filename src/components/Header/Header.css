@@ -15,7 +15,7 @@
 
   /* Surface Depth: Distinct Elevated Graphite */
   background-color: #101720;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid var(--border-shell);
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
 
   /* Mathematical 3-Zone Layout Architecture */
@@ -364,7 +364,7 @@
 .rr-bridge-divider {
   width: 1px;
   height: 14px;
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--border-divider);
   flex-shrink: 0;
   user-select: none;
 }

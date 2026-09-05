@@ -6,7 +6,7 @@
   height: 100dvh;
   flex-shrink: 0;
   background: var(--surface-secondary);
-  border-right: 1px solid var(--border-obsidian);
+  border-right: 1px solid var(--border-shell);
   display: flex;
   flex-direction: column;
   user-select: none;
@@ -22,7 +22,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  border-bottom: 1px solid var(--border-obsidian);
+  border-bottom: 1px solid var(--border-shell);
 }
 
 .rr-sidebar-brand-mark {
@@ -30,7 +30,7 @@
   height: 26px;
   border-radius: var(--radius-sm);
   background: var(--surface-elevated);
-  border: 1px solid var(--border-obsidian);
+  border: 1px solid var(--border-inner);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -151,14 +151,14 @@
 
 .rr-sidebar-divider {
   height: 1px;
-  background: var(--border-obsidian);
+  background: var(--border-divider);
   margin: var(--space-4) 0;
 }
 
 /* Sidebar Footer */
 .rr-sidebar-bottom {
   padding: var(--space-12) var(--space-16);
-  border-top: 1px solid var(--border-obsidian);
+  border-top: 1px solid var(--border-shell);
   background: rgba(0, 0, 0, 0.15);
 }
 

@@ -13,10 +13,40 @@
   --surface-soft: #171E28;
   --surface-overlay: rgba(13, 18, 25, 0.94);
 
-  /* Hairline Structural Borders (Low Contrast) */
-  --border-obsidian: #252E39;
-  --border-subtle: rgba(255, 255, 255, 0.05);
-  --border-focus: #3A4757;
+  /* ============================================================
+     PREMIUM COMMAND-CENTER BORDER & SURFACE SYSTEM (TOKENS)
+     ============================================================ */
+  /* Level 1: Major Modules (GIS Map, AI/Incident Rail, Telemetry, Infrastructure, KPI strip) */
+  --border-major: rgba(100, 180, 210, 0.20);
+  
+  /* Level 2: Inner Surfaces (Metric decks, topology, incident items, control buttons, HUD badges) */
+  --border-inner: rgba(100, 180, 210, 0.12);
+  
+  /* Level 3: Micro Dividers (Separators, hairline connectors, section dividers) */
+  --border-divider: rgba(100, 180, 210, 0.08);
+  
+  /* Command Shell Boundaries (Topbar bottom edge, Sidebar right edge) */
+  --border-shell: rgba(100, 180, 210, 0.14);
+  
+  /* Interaction & State Borders */
+  --border-hover: rgba(100, 180, 210, 0.24);
+  --border-active: rgba(40, 220, 240, 0.40);
+  --border-focus-ring: rgba(40, 220, 240, 0.65);
+
+  /* Semantic State Edge Accents (Indicators & accent lines, never replacing outer frames) */
+  --border-critical-edge: rgba(240, 93, 107, 0.40);
+  --border-warning-edge: rgba(240, 154, 62, 0.40);
+  --border-safe-edge: rgba(54, 201, 143, 0.40);
+
+  /* Hairline Structural Borders (Backwards Compatibility Mapping) */
+  --border-obsidian: var(--border-inner);
+  --border-subtle: var(--border-divider);
+  --border-focus: var(--border-hover);
+
+  /* Precision Radii Hierarchy (Restrained Command Operations Center) */
+  --radius-major: 11px; /* 10–12px for Major Modules */
+  --radius-inner: 8px;  /* 7–9px for Inner Surfaces */
+  --radius-micro: 6px;  /* 6–8px for Micro Controls */
 
   /* Typography Colors */
   --text-primary: #F2F5F7;      /* Warm white / soft white */
@@ -71,6 +101,12 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+/* Accessible Command-Center Focus Ring (Section 11) */
+:focus-visible {
+  outline: 1px solid var(--border-focus-ring) !important;
+  outline-offset: 2px !important;
 }
 
 html, body {

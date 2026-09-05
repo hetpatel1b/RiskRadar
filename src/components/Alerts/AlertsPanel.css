@@ -38,27 +38,28 @@
 /* Primary Critical Incident Box */
 .rr-critical-incident-box {
   background: var(--surface-elevated);
-  border: 1px solid var(--border-obsidian);
+  border: 1px solid var(--border-inner);
   border-left: 2.5px solid var(--semantic-critical);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-inner);
   padding: 5px 8px;
   display: flex;
   flex-direction: column;
   gap: 2.5px;
   cursor: pointer;
-  transition: border-color 180ms ease, background 180ms ease;
+  transition: border-color 200ms ease, background-color 200ms ease;
   flex-shrink: 0;
 }
 
 .rr-critical-incident-box:hover {
-  border-color: rgba(99, 215, 229, 0.35);
+  border-color: var(--border-hover);
   border-left-color: var(--semantic-critical);
+  background-color: var(--surface-soft);
 }
 
 .rr-critical-incident-box.selected-active {
-  border-color: rgba(99, 215, 229, 0.45);
+  border-color: var(--border-active);
   border-left-color: var(--semantic-critical);
-  background: rgba(99, 215, 229, 0.04);
+  background: rgba(40, 220, 240, 0.05);
 }
 
 .rr-incident-top-row {
@@ -206,18 +207,18 @@
   height: 26px;
   min-height: 26px;
   background: var(--surface-elevated);
-  border: 1px solid var(--border-obsidian);
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-inner);
+  border-radius: var(--radius-micro);
   padding: 0 7px;
   cursor: pointer;
-  transition: background-color 150ms ease, border-color 150ms ease;
+  transition: background-color 200ms ease, border-color 200ms ease;
   font-family: var(--font-sans);
   text-align: left;
 }
 
 .rr-sec-incident-row:hover {
-  background: var(--surface-soft);
-  border-color: rgba(99, 215, 229, 0.35);
+  background-color: var(--surface-soft);
+  border-color: var(--border-hover);
 }
 
 .rr-sec-incident-row:hover .rr-sec-arrow {
@@ -226,8 +227,8 @@
 }
 
 .rr-sec-incident-row.selected {
-  background: rgba(99, 215, 229, 0.08);
-  border-color: rgba(99, 215, 229, 0.5);
+  background: rgba(40, 220, 240, 0.06);
+  border-color: var(--border-active);
 }
 
 .rr-sec-incident-row.selected .rr-sec-city {
