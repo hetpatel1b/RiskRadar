@@ -1,0 +1,254 @@
+:root {
+  /* Surface Palette (Near-Black Layering) */
+  --bg-canvas: #07090d;
+  --bg-sidebar: #090c12;
+  --bg-surface-base: #0c1017;
+  --bg-surface-elevated: #111722;
+  --bg-surface-highlight: #161e2c;
+  --bg-surface-overlay: rgba(12, 16, 23, 0.88);
+  
+  /* Borders & Dividers */
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-medium: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  --border-cyan: rgba(0, 240, 255, 0.35);
+
+  /* Primary Accent: Electric Cyan */
+  --accent-cyan: #00f0ff;
+  --accent-cyan-hover: #38f4ff;
+  --accent-cyan-dim: rgba(0, 240, 255, 0.12);
+  --accent-cyan-glow: 0 0 16px rgba(0, 240, 255, 0.25);
+  --accent-cyan-subtle-glow: 0 0 8px rgba(0, 240, 255, 0.15);
+
+  /* Semantic Hazard System */
+  --hazard-safe: #10b981;
+  --hazard-safe-bg: rgba(16, 185, 129, 0.12);
+  --hazard-watch: #f59e0b;
+  --hazard-watch-bg: rgba(245, 158, 11, 0.12);
+  --hazard-warning: #f97316;
+  --hazard-warning-bg: rgba(249, 115, 22, 0.14);
+  --hazard-critical: #ef4444;
+  --hazard-critical-bg: rgba(239, 68, 68, 0.15);
+  --hazard-info: #00f0ff;
+  --hazard-info-bg: rgba(0, 240, 255, 0.12);
+
+  /* Text & Foreground */
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-disabled: #475569;
+  --text-inverse: #07090d;
+
+  /* Typography */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Spacing Scale */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Shadows */
+  --shadow-panel: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+/* Custom Scrollbar for Near-Black UI */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* Tabular numbers for high operational legibility */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Utility Badges & Tags */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.status-pill.safe {
+  background: var(--hazard-safe-bg);
+  color: var(--hazard-safe);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.status-pill.watch {
+  background: var(--hazard-watch-bg);
+  color: var(--hazard-watch);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.status-pill.warning {
+  background: var(--hazard-warning-bg);
+  color: var(--hazard-warning);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.status-pill.critical {
+  background: var(--hazard-critical-bg);
+  color: var(--hazard-critical);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.status-pill.cyan {
+  background: var(--hazard-info-bg);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+}
+
+/* Pulse Dot */
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.pulse-dot::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  background: inherit;
+  opacity: 0.6;
+  animation: pulse-ring 2.4s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.9); opacity: 0; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+/* Dark Map Overrides */
+.leaflet-container {
+  background: #080b0f !important;
+  font-family: var(--font-family) !important;
+  width: 100%;
+  height: 100%;
+}
+
+/* Compact Unobtrusive Legal Attribution */
+.leaflet-control-attribution {
+  background: rgba(7, 9, 13, 0.75) !important;
+  backdrop-filter: blur(4px);
+  color: #64748b !important;
+  font-size: 10px !important;
+  padding: 2px 6px !important;
+  border-radius: 3px 0 0 0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: none;
+  border-right: none;
+}
+
+.leaflet-control-attribution a {
+  color: #94a3b8 !important;
+  text-decoration: none;
+}
+
+.leaflet-control-attribution a:hover {
+  color: var(--accent-cyan) !important;
+  text-decoration: underline;
+}
+
+/* Custom RiskRadar Leaflet Popups */
+.leaflet-popup-content-wrapper {
+  background: var(--bg-surface-elevated) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-cyan) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8), var(--accent-cyan-subtle-glow) !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+
+.leaflet-popup-tip-container {
+  overflow: visible !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--bg-surface-elevated) !important;
+  border: 1px solid var(--border-cyan) !important;
+  box-shadow: none !important;
+}
+
+.leaflet-popup-close-button {
+  color: var(--text-muted) !important;
+  padding: 6px 8px !important;
+  font-size: 14px !important;
+}
+
+.leaflet-popup-close-button:hover {
+  color: var(--accent-cyan) !important;
+}

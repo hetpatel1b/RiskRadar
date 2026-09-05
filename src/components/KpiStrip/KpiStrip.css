@@ -1,0 +1,88 @@
+.rr-kpi-strip {
+  background: var(--bg-surface-elevated);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: var(--space-8) var(--space-24);
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-12);
+  align-items: center;
+}
+
+.rr-kpi-cell {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-8) var(--space-12);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid var(--border-subtle);
+  position: relative;
+  transition: border-color var(--transition-fast);
+}
+
+.rr-kpi-cell:hover {
+  border-color: var(--border-medium);
+}
+
+.rr-kpi-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.rr-kpi-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.rr-kpi-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.7;
+}
+
+.rr-kpi-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.rr-kpi-value {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.rr-kpi-cell.hazards .rr-kpi-value {
+  color: var(--hazard-critical);
+}
+
+.rr-kpi-cell.alerts .rr-kpi-value {
+  color: var(--hazard-warning);
+}
+
+.rr-kpi-cell.area .rr-kpi-value {
+  color: #fb923c;
+}
+
+.rr-kpi-cell.sensors .rr-kpi-value {
+  color: var(--accent-cyan);
+}
+
+.rr-kpi-cell.ai .rr-kpi-value {
+  color: #f43f5e;
+}
+
+.rr-kpi-cell.health .rr-kpi-value {
+  color: var(--hazard-safe);
+}
+
+.rr-kpi-subtext {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}

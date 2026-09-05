@@ -1,0 +1,58 @@
+.rr-app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  background-color: var(--bg-canvas);
+  overflow: hidden;
+}
+
+.rr-main-workspace {
+  flex: 1;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.rr-dashboard-content {
+  flex: 1;
+  padding: var(--space-16) var(--space-20);
+  display: grid;
+  grid-template-columns: 1.25fr 0.95fr;
+  gap: var(--space-16);
+  overflow: hidden;
+  min-height: 0; /* Critical for nested flex/grid auto sizing */
+}
+
+/* Primary GIS Hero Map Column (~57% width, 100% height) */
+.rr-content-hero-col {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Secondary Operational Intelligence Column */
+.rr-content-side-col {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  overflow-y: auto;
+  padding-right: 2px;
+  min-height: 0;
+}
+
+/* 1920px optimization: widen GIS space and allow spacious luxury layout */
+@media (min-width: 1800px) {
+  .rr-dashboard-content {
+    grid-template-columns: 1.35fr 0.95fr;
+    gap: var(--space-20);
+    padding: var(--space-20) var(--space-24);
+  }
+  
+  .rr-content-side-col {
+    gap: var(--space-16);
+  }
+}
