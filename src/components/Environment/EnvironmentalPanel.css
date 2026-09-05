@@ -1,52 +1,125 @@
+/* ============================================================
+   RISKRADAR — PREMIUM ENVIRONMENTAL TELEMETRY MODULE
+   Operational Command Surface Instrumentation
+   ============================================================ */
+
 .rr-env-deck {
   background: var(--surface-secondary);
   border: 1px solid var(--border-obsidian);
   border-radius: var(--radius-lg);
-  padding: 14px 18px;
+  padding: 12px 18px 13px 18px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 8px;
+  gap: 9px;
   height: 100%;
   min-height: 0;
   width: 100%;
   min-width: 0;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
+/* 1. Header with Live Telemetry State and Clean Station Metadata */
 .rr-env-deck-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   min-width: 0;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.rr-env-header-left {
+  display: flex;
+  align-items: center;
   gap: 8px;
+  min-width: 0;
 }
 
 .rr-env-deck-title {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  font-size: 12.5px;
+  font-weight: 650;
+  letter-spacing: 0.05em;
   color: var(--text-secondary);
   white-space: nowrap;
   flex-shrink: 0;
 }
 
-.rr-env-deck-node {
-  font-size: 10.5px;
-  color: var(--text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 0;
+/* Subtle Live Feeds Indicator */
+.rr-env-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4.5px;
+  background: rgba(99, 215, 229, 0.07);
+  border: 1px solid rgba(99, 215, 229, 0.22);
+  border-radius: 3px;
+  padding: 1.5px 5.5px;
+  user-select: none;
 }
 
-/* Single Integrated Instrumentation Strip with Hairline Dividers */
+.rr-env-live-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--signal-cyan);
+  box-shadow: 0 0 5px rgba(99, 215, 229, 0.65);
+  animation: rrLiveDotPulse 2.2s ease-in-out infinite;
+}
+
+@keyframes rrLiveDotPulse {
+  0%, 100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.rr-env-live-text {
+  font-size: 8.5px;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  color: var(--signal-cyan);
+  line-height: 1;
+}
+
+/* Station Metadata (Right side of header) */
+.rr-env-header-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  text-align: right;
+  flex-shrink: 1;
+}
+
+.rr-env-station {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.rr-env-meta-dot {
+  font-size: 8px;
+  color: rgba(130, 150, 170, 0.35);
+}
+
+.rr-env-city {
+  font-size: 11px;
+  font-weight: 600;
+  color: #CAD6E2;
+  white-space: nowrap;
+}
+
+/* 2. Unified 5-Zone Telemetry Surface (One Integrated Panel) */
 .rr-env-instrument-strip {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   background: var(--surface-elevated);
   border: 1px solid var(--border-obsidian);
-  border-radius: var(--radius-sm);
+  border-radius: 7px;
   flex: 1;
   min-height: 0;
   width: 100%;
@@ -54,92 +127,235 @@
   overflow: hidden;
 }
 
-.rr-instrument-col {
-  padding: 8px 12px;
-  border-right: 1px solid var(--border-obsidian);
+/* Individual Measurement Zone */
+.rr-telemetry-zone {
+  padding: 8px 12px 7px 12px;
+  border-right: 1px solid rgba(130, 150, 170, 0.12);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 4px;
   min-width: 0;
   overflow: hidden;
-  transition: background var(--trans-fast);
+  transition: background-color 160ms ease, border-color 160ms ease;
+  position: relative;
+  cursor: default;
 }
 
-.rr-instrument-col.last {
+.rr-telemetry-zone.last {
   border-right: none;
 }
 
-.rr-instrument-col:hover {
-  background: var(--surface-soft);
+.rr-telemetry-zone:hover {
+  background: rgba(255, 255, 255, 0.025);
 }
 
-.rr-instrument-top {
+/* Operational Priority: Water Level (Flood Sector Primary Gauge) */
+.rr-telemetry-zone.priority-water {
+  background: rgba(240, 93, 107, 0.025);
+}
+
+.rr-telemetry-zone.priority-water:hover {
+  background: rgba(240, 93, 107, 0.045);
+}
+
+/* Row 1: Uppercase Metric Label */
+.rr-zone-label-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   min-width: 0;
-  gap: 4px;
+  line-height: 1;
 }
 
-.rr-instrument-label {
+.rr-zone-label {
   font-size: 9.5px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-muted);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-width: 0;
 }
 
-.rr-instrument-delta {
-  font-size: 9.5px;
-  color: var(--text-muted);
-  white-space: nowrap;
+/* Row 2: Status Pill & Contextual Delta */
+.rr-zone-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  min-width: 0;
+  line-height: 1;
+  margin-top: 1px;
+}
+
+.rr-zone-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3.5px;
+  line-height: 1;
+}
+
+.rr-zone-status-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
   flex-shrink: 0;
 }
 
-.rr-instrument-delta.warning {
-  color: var(--semantic-warning);
+.rr-zone-status-dot.safe { background: var(--semantic-nominal); }
+.rr-zone-status-dot.warning { background: var(--semantic-warning); }
+.rr-zone-status-dot.critical {
+  background: var(--semantic-critical);
+  box-shadow: 0 0 4px rgba(240, 93, 107, 0.65);
+}
+.rr-zone-status-dot.watch { background: #8B98A7; }
+
+.rr-zone-status-text {
+  font-size: 8.5px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  line-height: 1;
 }
 
-.rr-instrument-delta.critical {
-  color: var(--semantic-critical);
+.rr-zone-status-text.safe { color: #8B98A7; }
+.rr-zone-status-text.warning { color: var(--semantic-warning); }
+.rr-zone-status-text.critical { color: var(--semantic-critical); }
+.rr-zone-status-text.watch { color: #8B98A7; }
+
+.rr-zone-delta {
+  font-size: 9px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1;
 }
 
-.rr-instrument-bottom {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  min-width: 0;
-  gap: 4px;
-}
+.rr-zone-delta.safe { color: var(--text-muted); }
+.rr-zone-delta.warning { color: var(--semantic-warning); }
+.rr-zone-delta.critical { color: var(--semantic-critical); }
+.rr-zone-delta.watch { color: var(--text-muted); }
 
-.rr-instrument-val-wrap {
+/* Row 3: Dominant Value + Baseline-Aligned Unit */
+.rr-zone-value-row {
   display: flex;
   align-items: baseline;
-  gap: 3px;
+  gap: 3.5px;
+  line-height: 1;
   min-width: 0;
+  margin: 1px 0;
 }
 
-.rr-instrument-val {
-  font-size: 20px;
-  font-weight: 600;
+.rr-zone-val {
+  font-size: 24px;
+  font-weight: 650;
   color: var(--text-primary);
+  line-height: 1;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  animation: rrValueEnter 250ms ease-out forwards;
+}
+
+.rr-zone-unit {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
   line-height: 1;
   white-space: nowrap;
 }
 
-.rr-instrument-unit {
-  font-size: 10.5px;
-  color: var(--text-secondary);
-  white-space: nowrap;
+@keyframes rrValueEnter {
+  from {
+    opacity: 0.85;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.rr-instrument-spark {
-  display: block;
-  opacity: 0.85;
-  flex-shrink: 0;
+/* Row 4: Micro-Trend Sparkline */
+.rr-zone-sparkline-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  width: 100%;
+  min-width: 0;
+  height: 18px;
+  margin-top: 1px;
 }
+
+.rr-zone-sparkline {
+  display: block;
+  width: 100%;
+  max-width: 68px;
+  height: 18px;
+  flex-shrink: 0;
+  overflow: visible;
+}
+
+/* Draw animation on initial render */
+.rr-spark-line-anim {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  animation: rrSparkDraw 850ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes rrSparkDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Endpoint Live Reading Node */
+.rr-spark-endpoint {
+  opacity: 0.9;
+  animation: rrEndpointPulse 3s ease-in-out infinite;
+}
+
+@keyframes rrEndpointPulse {
+  0%, 100% {
+    opacity: 0.65;
+    r: 1.8px;
+  }
+  50% {
+    opacity: 1;
+    r: 2.5px;
+  }
+}
+
+/* Accessibility & Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .rr-spark-line-anim {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+  .rr-env-live-dot,
+  .rr-spark-endpoint,
+  .rr-zone-val {
+    animation: none !important;
+  }
+}
+
+/* Responsive Composition */
+@media (max-width: 1150px) {
+  .rr-env-station {
+    display: none;
+  }
+  .rr-env-meta-dot {
+    display: none;
+  }
+  .rr-zone-val {
+    font-size: 21px;
+  }
+}
+
+@media (max-width: 800px) {
+  .rr-env-instrument-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+

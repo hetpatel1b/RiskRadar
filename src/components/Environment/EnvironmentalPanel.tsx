@@ -2,92 +2,193 @@ import React from 'react';
 import { MOCK_ENVIRONMENTAL } from '../../data/environment';
 import './EnvironmentalPanel.css';
 
+interface TelemetryItem {
+  id: string;
+  label: string;
+  value: string;
+  unit: string;
+  status: string;
+  delta: string;
+  statusType: 'safe' | 'warning' | 'critical' | 'watch';
+  color: string;
+  tooltip: string;
+  linePath: string;
+  areaPath: string;
+  endY: number;
+}
+
 export const EnvironmentalPanel: React.FC = () => {
   const env = MOCK_ENVIRONMENTAL;
 
-  const telemetryItems = [
+  const telemetryItems: TelemetryItem[] = [
     {
-      label: 'Temperature',
+      id: 'temperature',
+      label: 'TEMPERATURE',
       value: env.temperature.value,
       unit: env.temperature.unit,
-      delta: '+0.3°',
-      sparkline: 'M0,13 L8,11 L16,12 L24,8 L32,9 L40,5',
-      color: 'default',
+      status: 'NORMAL',
+      delta: '+0.3°C',
+      statusType: 'safe',
+      color: '#63D7E5',
+      tooltip: 'Catchment Temperature: 32.4°C · Normal diurnal variation',
+      linePath: 'M 0,14 C 14,14 22,11 34,12 C 46,13 54,8 64,6',
+      areaPath: 'M 0,14 C 14,14 22,11 34,12 C 46,13 54,8 64,6 L 64,20 L 0,20 Z',
+      endY: 6,
     },
     {
-      label: 'Humidity',
+      id: 'humidity',
+      label: 'HUMIDITY',
       value: env.humidity.value,
       unit: env.humidity.unit,
+      status: 'ELEVATED',
       delta: '+4%',
-      sparkline: 'M0,12 L8,10 L16,9 L24,6 L32,5 L40,3',
-      color: 'default',
+      statusType: 'warning',
+      color: '#63D7E5',
+      tooltip: 'Relative Humidity: 74% · Saturated tropospheric boundary',
+      linePath: 'M 0,13 C 14,13 22,10 34,9 C 46,8 54,6 64,5',
+      areaPath: 'M 0,13 C 14,13 22,10 34,9 C 46,8 54,6 64,5 L 64,20 L 0,20 Z',
+      endY: 5,
     },
     {
-      label: 'Rainfall (1h)',
+      id: 'rainfall',
+      label: 'RAINFALL · 1H',
       value: env.rainfall.value,
       unit: env.rainfall.unit,
-      delta: '+6.2mm',
-      sparkline: 'M0,14 L8,12 L16,10 L24,5 L32,3 L40,1',
-      color: 'warning',
+      status: 'RISING',
+      delta: '+6.2 mm',
+      statusType: 'warning',
+      color: '#F09A3E',
+      tooltip: 'Vishwamitri Gauge 1-Hour Rainfall: 18.6mm · Increasing intensity',
+      linePath: 'M 0,16 C 16,15 28,13 40,8 C 50,4 56,3 64,2',
+      areaPath: 'M 0,16 C 16,15 28,13 40,8 C 50,4 56,3 64,2 L 64,20 L 0,20 Z',
+      endY: 2,
     },
     {
-      label: 'Air Quality',
+      id: 'airQuality',
+      label: 'AIR QUALITY',
       value: env.airQuality.value,
       unit: env.airQuality.unit,
-      delta: 'Moderate',
-      sparkline: 'M0,8 L8,8 L16,7 L24,8 L32,6 L40,7',
-      color: 'default',
+      status: 'MODERATE',
+      delta: '',
+      statusType: 'watch',
+      color: '#8B98A7',
+      tooltip: 'Urban Basin Air Quality: 82 AQI · Moderate Particulate Index',
+      linePath: 'M 0,10 C 14,8 24,12 36,10 C 48,8 54,11 64,10',
+      areaPath: 'M 0,10 C 14,8 24,12 36,10 C 48,8 54,11 64,10 L 64,20 L 0,20 Z',
+      endY: 10,
     },
     {
-      label: 'Water Level',
+      id: 'waterLevel',
+      label: 'WATER LEVEL',
       value: env.waterLevel.value,
       unit: env.waterLevel.unit,
-      delta: '+0.18m',
-      sparkline: 'M0,14 L8,12 L16,8 L24,6 L32,3 L40,1',
-      color: 'critical',
+      status: 'RISING',
+      delta: '+0.18 m',
+      statusType: 'critical',
+      color: '#F05D6B',
+      tooltip: 'Vishwamitri River Stage: 4.72m · Exceeds Danger Mark 4.50m',
+      linePath: 'M 0,17 C 14,16 26,11 38,7 C 48,3 56,2 64,2',
+      areaPath: 'M 0,17 C 14,16 26,11 38,7 C 48,3 56,2 64,2 L 64,20 L 0,20 Z',
+      endY: 2,
     },
   ];
 
   return (
-    <div className="rr-env-deck" aria-label="Environmental Telemetry Instrumentation">
+    <div className="rr-env-deck" aria-label="Environmental Telemetry Instrumentation Panel">
+      {/* 1. Header with Live Status and Clean Station Metadata */}
       <div className="rr-env-deck-header">
-        <span className="rr-env-deck-title">ENVIRONMENTAL TELEMETRY</span>
-        <span className="rr-env-deck-node">Vishwamitri Hydrological 04 (Vadodara)</span>
+        <div className="rr-env-header-left">
+          <span className="rr-env-deck-title">ENVIRONMENTAL TELEMETRY</span>
+          <div className="rr-env-live-badge" title="Continuous Hydrological & Atmospheric Feeds Active">
+            <span className="rr-env-live-dot" />
+            <span className="rr-env-live-text font-mono">LIVE TELEMETRY</span>
+          </div>
+        </div>
+
+        <div className="rr-env-header-meta">
+          <span className="rr-env-station font-mono">Vishwamitri Hydrological 04</span>
+          <span className="rr-env-meta-dot font-mono">·</span>
+          <span className="rr-env-city">Vadodara</span>
+        </div>
       </div>
 
-      <div className="rr-env-instrument-strip">
-        {telemetryItems.map((item, idx) => (
-          <div key={item.label} className={`rr-instrument-col ${idx === telemetryItems.length - 1 ? 'last' : ''}`}>
-            <div className="rr-instrument-top">
-              <span className="rr-instrument-label">{item.label}</span>
-              <span className={`rr-instrument-delta font-mono ${item.color}`}>{item.delta}</span>
-            </div>
+      {/* 2. Unified 5-Metric Instrument Strip with Precise Hairline Dividers */}
+      <div
+        className="rr-env-instrument-strip"
+        role="region"
+        aria-label="Five Operational Environmental Telemetry Measurement Zones"
+      >
+        {telemetryItems.map((item, idx) => {
+          const isLast = idx === telemetryItems.length - 1;
+          const isWaterLevel = item.id === 'waterLevel';
 
-            <div className="rr-instrument-bottom">
-              <div className="rr-instrument-val-wrap">
-                <span className="rr-instrument-val font-mono">{item.value}</span>
-                <span className="rr-instrument-unit">{item.unit}</span>
+          return (
+            <div
+              key={item.id}
+              className={`rr-telemetry-zone ${isLast ? 'last' : ''} ${isWaterLevel ? 'priority-water' : ''}`}
+              title={item.tooltip}
+            >
+              {/* Row 1: Uppercase Label */}
+              <div className="rr-zone-label-row">
+                <span className="rr-zone-label">{item.label}</span>
               </div>
 
-              <svg className="rr-instrument-spark" width="38" height="14" viewBox="0 0 40 16">
-                <path
-                  d={item.sparkline}
-                  fill="none"
-                  stroke={
-                    item.color === 'critical'
-                      ? 'var(--semantic-critical)'
-                      : item.color === 'warning'
-                      ? 'var(--semantic-warning)'
-                      : 'var(--signal-cyan)'
-                  }
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              {/* Row 2: Status Pill & Contextual Delta */}
+              <div className="rr-zone-status-row">
+                <span className={`rr-zone-status-pill ${item.statusType}`}>
+                  <span className={`rr-zone-status-dot ${item.statusType}`} />
+                  <span className={`rr-zone-status-text ${item.statusType}`}>{item.status}</span>
+                </span>
+                {item.delta && (
+                  <span className={`rr-zone-delta font-mono ${item.statusType}`}>
+                    {item.delta}
+                  </span>
+                )}
+              </div>
+
+              {/* Row 3: Dominant Value + Secondary Unit (Consistent Baseline Alignment across all 5 cells) */}
+              <div className="rr-zone-value-row">
+                <span className="rr-zone-val font-mono">{item.value}</span>
+                <span className="rr-zone-unit">{item.unit}</span>
+              </div>
+
+              {/* Row 4: Elegant Micro-Trend Sparkline */}
+              <div className="rr-zone-sparkline-row">
+                <svg
+                  className="rr-zone-sparkline"
+                  width="64"
+                  height="18"
+                  viewBox="0 0 64 20"
+                  aria-label={`${item.label} micro-trend curve`}
+                >
+                  <defs>
+                    <linearGradient id={`spark-grad-${item.id}`} x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={item.color} stopOpacity="0.24" />
+                      <stop offset="100%" stopColor={item.color} stopOpacity="0.0" />
+                    </linearGradient>
+                  </defs>
+                  <path d={item.areaPath} fill={`url(#spark-grad-${item.id})`} />
+                  <path
+                    d={item.linePath}
+                    fill="none"
+                    stroke={item.color}
+                    strokeWidth="1.65"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="rr-spark-line-anim"
+                  />
+                  <circle
+                    cx="64"
+                    cy={item.endY}
+                    r="2"
+                    fill={item.color}
+                    className="rr-spark-endpoint"
+                  />
+                </svg>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
