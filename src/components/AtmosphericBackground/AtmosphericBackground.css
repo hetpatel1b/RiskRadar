@@ -1,0 +1,404 @@
+/* ============================================================
+   RISKRADAR — PREMIUM ATMOSPHERIC BACKGROUND SYSTEM
+   "INTELLIGENCE FIELD" ARCHITECTURE (GPU-ACCELERATED)
+   ============================================================ */
+
+.rr-atmospheric-field {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none !important;
+  user-select: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* ============================================================
+   LAYER 1: DEEP CANVAS BASE & VIGNETTE
+   ============================================================ */
+
+.rr-atmo-canvas-base {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 62% 28%, #0A1118 0%, #070B10 65%, #05080C 100%);
+  box-shadow: inset 0 0 180px rgba(0, 0, 0, 0.85);
+  pointer-events: none;
+}
+
+/* ============================================================
+   LAYER 2: MULTI-ZONE ATMOSPHERIC LIGHT FIELDS (ASYNC DRIFT)
+   ============================================================ */
+
+.rr-atmo-zones-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Zone A (Top Center): Soft Arctic Cyan Field */
+.rr-atmo-zone-top-cyan {
+  position: absolute;
+  top: -120px;
+  left: 35%;
+  width: 720px;
+  height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(99, 215, 229, 0.036) 0%, rgba(99, 215, 229, 0) 70%);
+  filter: blur(65px);
+  will-change: transform;
+  animation: rrAtmoFloatCyan 26s ease-in-out infinite alternate;
+}
+
+@keyframes rrAtmoFloatCyan {
+  0% {
+    transform: translate3d(-1%, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(1.4%, -0.8%, 0) scale(1.06);
+  }
+  100% {
+    transform: translate3d(-0.8%, 0.6%, 0) scale(0.96);
+  }
+}
+
+/* Zone B (Mid Right): Cool Blue Atmospheric Field */
+.rr-atmo-zone-mid-blue {
+  position: absolute;
+  top: 15%;
+  right: -80px;
+  width: 760px;
+  height: 540px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(117, 155, 255, 0.026) 0%, rgba(117, 155, 255, 0) 70%);
+  filter: blur(75px);
+  will-change: transform;
+  animation: rrAtmoFloatBlue 32s ease-in-out infinite alternate;
+}
+
+@keyframes rrAtmoFloatBlue {
+  0% {
+    transform: translate3d(0.8%, 0, 0) scale(0.98);
+  }
+  50% {
+    transform: translate3d(-1.2%, 0.8%, 0) scale(1.05);
+  }
+  100% {
+    transform: translate3d(0.6%, -0.6%, 0) scale(1);
+  }
+}
+
+/* Zone C (Lower Left): Almost Invisible Neutral Slate Field */
+.rr-atmo-zone-lower-slate {
+  position: absolute;
+  bottom: -100px;
+  left: 5%;
+  width: 680px;
+  height: 460px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(100, 160, 200, 0.02) 0%, rgba(100, 160, 200, 0) 70%);
+  filter: blur(80px);
+  will-change: transform;
+  animation: rrAtmoFloatSlate 36s ease-in-out infinite alternate;
+}
+
+@keyframes rrAtmoFloatSlate {
+  0% {
+    transform: translate3d(0, 0.8%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(1%, -0.6%, 0) scale(1.04);
+  }
+  100% {
+    transform: translate3d(-0.8%, 0, 0) scale(0.97);
+  }
+}
+
+/* ============================================================
+   LAYER 3: TOPOGRAPHIC CONTOURS (GEOSPATIAL ELEVATION)
+   ============================================================ */
+
+.rr-atmo-contours {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: rgba(100, 180, 210, 0.035);
+  pointer-events: none;
+}
+
+.rr-contour-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.rr-contour-group-a {
+  opacity: 0.65;
+  animation: rrContourBreatheA 24s ease-in-out infinite alternate;
+  will-change: opacity;
+}
+
+@keyframes rrContourBreatheA {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}
+
+.rr-contour-group-b {
+  opacity: 0.55;
+  animation: rrContourBreatheB 28s ease-in-out infinite alternate;
+  will-change: opacity;
+}
+
+@keyframes rrContourBreatheB {
+  0% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+
+/* Intermittent Scanning Trace (Very rare subtle highlight) */
+.rr-contour-scanning-trace {
+  opacity: 0.35;
+  animation: rrContourScanHighlight 20s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes rrContourScanHighlight {
+  0%, 82%, 100% {
+    opacity: 0.3;
+    stroke: rgba(100, 180, 210, 0.03);
+  }
+  88% {
+    opacity: 0.75;
+    stroke: rgba(99, 215, 229, 0.08);
+  }
+  94% {
+    opacity: 0.35;
+    stroke: rgba(100, 180, 210, 0.03);
+  }
+}
+
+/* ============================================================
+   LAYER 4: GEOSPATIAL MICRO-GRID & COORDINATE MARKINGS
+   ============================================================ */
+
+.rr-atmo-grid-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.rr-atmo-grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(100, 180, 210, 0.016) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(100, 180, 210, 0.016) 1px, transparent 1px);
+  background-size: 160px 160px;
+  mask-image: radial-gradient(circle at 60% 45%, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 80%);
+  -webkit-mask-image: radial-gradient(circle at 60% 45%, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 80%);
+}
+
+.rr-atmo-coords {
+  position: absolute;
+  font-family: var(--font-mono, monospace);
+  font-size: 8.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: rgba(100, 180, 210, 0.032);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.rr-atmo-coords.top-right {
+  top: 72px;
+  right: 28px;
+  text-align: right;
+}
+
+.rr-atmo-coords.bottom-left {
+  bottom: 24px;
+  left: 236px;
+  text-align: left;
+}
+
+/* ============================================================
+   LAYER 5: SPARSE MICRO TELEMETRY DATA PARTICLES (1px POINTS)
+   ============================================================ */
+
+.rr-atmo-particles-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.rr-atmo-particle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  background-color: rgba(99, 215, 229, 0.65);
+  box-shadow: 0 0 2px rgba(99, 215, 229, 0.35);
+  opacity: 0.25;
+  will-change: transform, opacity;
+  animation-name: rrParticleFloat;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes rrParticleFloat {
+  0%, 100% {
+    opacity: 0.15;
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translate3d(var(--dx, 8px), var(--dy, -8px), 0);
+  }
+}
+
+/* ============================================================
+   LAYER 6: SUBLIMINAL TELEMETRY PULSE BEAM
+   ============================================================ */
+
+.rr-atmo-pulse-track {
+  position: absolute;
+  top: 98px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.rr-atmo-pulse-beam {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(99, 215, 229, 0) 0%,
+    rgba(99, 215, 229, 0.035) 50%,
+    rgba(99, 215, 229, 0) 100%
+  );
+  animation: rrPulseBeamMove 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+
+@keyframes rrPulseBeamMove {
+  0% {
+    transform: translateX(-140px);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.85;
+  }
+  80% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateX(2200px);
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   LAYER 7: SUBLIMINAL RADAR ATMOSPHERE (FAR UPPER-RIGHT)
+   ============================================================ */
+
+.rr-atmo-radar-beacon {
+  position: absolute;
+  top: 14%;
+  right: 16%;
+  width: 180px;
+  height: 180px;
+  margin-top: -90px;
+  margin-right: -90px;
+  pointer-events: none;
+}
+
+.rr-atmo-radar-wave {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(99, 215, 229, 0.032);
+  will-change: transform, opacity;
+  animation: rrRadarAtmosphere 9s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+}
+
+.rr-atmo-radar-wave.ring-2 {
+  animation-delay: 4.5s;
+}
+
+@keyframes rrRadarAtmosphere {
+  0% {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.16);
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE COMPOSITION
+   ============================================================ */
+
+@media (max-width: 1280px) {
+  .rr-atmo-coords {
+    display: none;
+  }
+  .rr-atmo-radar-beacon {
+    display: none;
+  }
+}
+
+/* ============================================================
+   ACCESSIBILITY & PREFERS-REDUCED-MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .rr-atmo-zone-top-cyan,
+  .rr-atmo-zone-mid-blue,
+  .rr-atmo-zone-lower-slate,
+  .rr-contour-group-a,
+  .rr-contour-group-b,
+  .rr-contour-scanning-trace,
+  .rr-atmo-particle,
+  .rr-atmo-pulse-beam,
+  .rr-atmo-radar-wave {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .rr-contour-group-a { opacity: 0.6 !important; }
+  .rr-contour-group-b { opacity: 0.5 !important; }
+  .rr-atmo-particle { opacity: 0.2 !important; }
+  .rr-atmo-pulse-beam { display: none !important; }
+  .rr-atmo-radar-beacon { display: none !important; }
+}

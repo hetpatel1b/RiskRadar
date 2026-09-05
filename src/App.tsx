@@ -7,6 +7,7 @@ import { AiRiskCard } from './components/AiRiskCard/AiRiskCard';
 import { AlertsPanel } from './components/Alerts/AlertsPanel';
 import { EnvironmentalPanel } from './components/Environment/EnvironmentalPanel';
 import { InfrastructurePanel } from './components/Infrastructure/InfrastructurePanel';
+import { AtmosphericBackground } from './components/AtmosphericBackground/AtmosphericBackground';
 import {
   MOCK_SENSORS,
   MOCK_HAZARD_ZONES,
@@ -30,6 +31,9 @@ export const App: React.FC = () => {
 
   return (
     <div className="rr-command-app">
+      {/* Strategic Command Intelligence Field Background */}
+      <AtmosphericBackground />
+
       {/* 1. Left Strategic Navigation (220px) */}
       <Sidebar
         activeTab={activeTab}
