@@ -1,173 +1,193 @@
 .rr-sidebar {
-  width: 240px;
-  min-width: 240px;
-  height: 100vh;
-  background: var(--bg-sidebar);
-  border-right: 1px solid var(--border-subtle);
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+  height: 100%;
+  height: 100dvh;
+  flex-shrink: 0;
+  background: var(--surface-secondary);
+  border-right: 1px solid var(--border-obsidian);
   display: flex;
   flex-direction: column;
   user-select: none;
-  z-index: 100;
+  z-index: 50;
+  overflow: hidden;
 }
 
-.rr-sidebar-brand {
-  height: 60px;
-  padding: 0 var(--space-20);
+/* Brand Header */
+.rr-sidebar-top {
+  height: 54px;
+  min-height: 54px;
+  padding: 0 var(--space-16);
   display: flex;
   align-items: center;
-  gap: var(--space-12);
-  border-bottom: 1px solid var(--border-subtle);
+  gap: 10px;
+  border-bottom: 1px solid var(--border-obsidian);
 }
 
-.rr-brand-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(0, 150, 255, 0.05));
-  border: 1px solid var(--border-cyan);
+.rr-sidebar-brand-mark {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-obsidian);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent-cyan);
-  box-shadow: var(--accent-cyan-subtle-glow);
+  color: var(--signal-cyan);
+  flex-shrink: 0;
 }
 
-.rr-brand-text {
+.rr-sidebar-brand-text {
   display: flex;
   flex-direction: column;
 }
 
 .rr-brand-title {
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: #ffffff;
-  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
 }
 
 .rr-brand-subtitle {
-  font-size: 10px;
-  font-weight: 500;
+  font-size: 9px;
+  font-weight: 600;
   letter-spacing: 0.08em;
   color: var(--text-muted);
-  text-transform: uppercase;
 }
 
+/* Navigation List */
 .rr-sidebar-nav {
   flex: 1;
   padding: var(--space-16) var(--space-12);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-16);
+  overflow-y: auto;
 }
 
-.rr-nav-item {
+.rr-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rr-nav-group-title {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  padding: 4px var(--space-8) 6px var(--space-8);
+}
+
+.rr-nav-button {
   display: flex;
   align-items: center;
-  gap: var(--space-12);
-  padding: 10px var(--space-12);
-  border-radius: var(--radius-md);
+  gap: 10px;
+  padding: 7px var(--space-8);
+  border-radius: var(--radius-sm);
   color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12.5px;
+  font-weight: 450;
+  font-family: var(--font-sans);
   cursor: pointer;
-  transition: all var(--transition-fast);
-  position: relative;
-  text-decoration: none;
+  transition: all var(--trans-fast);
   background: transparent;
-  border: 1px solid transparent;
+  border: none;
+  position: relative;
+  width: 100%;
+  text-align: left;
 }
 
-.rr-nav-item:hover {
+.rr-nav-button:hover {
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.025);
 }
 
-.rr-nav-item.active {
-  color: #ffffff;
-  background: linear-gradient(90deg, rgba(0, 240, 255, 0.12) 0%, rgba(0, 240, 255, 0.02) 100%);
-  border-color: rgba(0, 240, 255, 0.25);
+/* Restrained 2px Arctic Cyan Active Indicator */
+.rr-nav-button.active {
+  color: var(--text-primary);
+  background: var(--surface-elevated);
+  font-weight: 550;
 }
 
-.rr-nav-item.active::before {
+.rr-nav-button.active::before {
   content: '';
   position: absolute;
-  left: -12px;
-  top: 4px;
-  bottom: 4px;
-  width: 3px;
-  border-radius: 0 2px 2px 0;
-  background: var(--accent-cyan);
-  box-shadow: 0 0 8px var(--accent-cyan);
+  left: 0;
+  top: 5px;
+  bottom: 5px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--signal-cyan);
 }
 
-.rr-nav-icon {
-  width: 17px;
-  height: 17px;
-  opacity: 0.8;
+.rr-nav-btn-icon {
+  opacity: 0.7;
   flex-shrink: 0;
+  color: var(--text-secondary);
 }
 
-.rr-nav-item.active .rr-nav-icon {
-  color: var(--accent-cyan);
+.rr-nav-button.active .rr-nav-btn-icon {
+  color: var(--signal-cyan);
   opacity: 1;
 }
 
-.rr-nav-badge {
-  margin-left: auto;
+.rr-nav-btn-label {
+  flex: 1;
+}
+
+.rr-nav-btn-badge {
   font-size: 10px;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: var(--radius-full);
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: var(--radius-sm);
+  background: var(--semantic-critical-bg);
+  color: var(--semantic-critical);
+  border: 1px solid rgba(240, 93, 107, 0.3);
 }
 
-.rr-nav-badge.alert {
-  background: var(--hazard-critical-bg);
-  color: var(--hazard-critical);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+.rr-sidebar-divider {
+  height: 1px;
+  background: var(--border-obsidian);
+  margin: var(--space-4) 0;
 }
 
-.rr-sidebar-footer {
-  padding: var(--space-16);
-  border-top: 1px solid var(--border-subtle);
-  background: rgba(0, 0, 0, 0.2);
+/* Sidebar Footer */
+.rr-sidebar-bottom {
+  padding: var(--space-12) var(--space-16);
+  border-top: 1px solid var(--border-obsidian);
+  background: rgba(0, 0, 0, 0.15);
 }
 
-.rr-operator-card {
+.rr-desk-indicator {
   display: flex;
   align-items: center;
-  gap: var(--space-12);
+  gap: 9px;
 }
 
-.rr-operator-avatar {
-  width: 32px;
-  height: 32px;
+.rr-desk-dot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-medium);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--accent-cyan);
-  font-size: 11px;
-  font-weight: 700;
+  background: var(--semantic-safe);
+  flex-shrink: 0;
 }
 
-.rr-operator-info {
+.rr-desk-meta {
   display: flex;
   flex-direction: column;
 }
 
-.rr-operator-name {
-  font-size: 12px;
-  font-weight: 600;
+.rr-desk-title {
+  font-size: 11px;
+  font-weight: 550;
   color: var(--text-primary);
 }
 
-.rr-operator-role {
-  font-size: 10px;
+.rr-desk-subtitle {
+  font-size: 9.5px;
   color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  gap: 4px;
 }

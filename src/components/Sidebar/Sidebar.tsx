@@ -8,8 +8,7 @@ import {
   Network,
   BarChart3,
   Settings,
-  Radar,
-  ShieldCheck,
+  Shield,
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -24,7 +23,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectTab,
   alertCount = 3,
 }) => {
-  const navItems = [
+  const commandItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'live-map', label: 'Live Map', icon: MapPin },
     { id: 'ai-intelligence', label: 'AI Intelligence', icon: BrainCircuit },
@@ -32,57 +31,69 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'sensors', label: 'Sensors', icon: Activity },
     { id: 'network', label: 'Network', icon: Network },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-    { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
   return (
-    <aside className="rr-sidebar" aria-label="RiskRadar Navigation">
-      {/* Brand Header */}
-      <div className="rr-sidebar-brand">
-        <div className="rr-brand-icon">
-          <Radar size={18} />
+    <aside className="rr-sidebar" aria-label="RiskRadar Strategic Navigation">
+      {/* Top Brand Identity */}
+      <div className="rr-sidebar-top">
+        <div className="rr-sidebar-brand-mark">
+          <Shield size={15} strokeWidth={2.2} />
         </div>
-        <div className="rr-brand-text">
+        <div className="rr-sidebar-brand-text">
           <span className="rr-brand-title">RiskRadar</span>
-          <span className="rr-brand-subtitle">Emergency Command</span>
+          <span className="rr-brand-subtitle">NATIONAL RESILIENCE</span>
         </div>
       </div>
 
-      {/* Navigation Links */}
-      <nav className="rr-sidebar-nav">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activeTab === item.id;
-          return (
-            <button
-              key={item.id}
-              className={`rr-nav-item ${isActive ? 'active' : ''}`}
-              onClick={() => onSelectTab(item.id)}
-              type="button"
-            >
-              <Icon className="rr-nav-icon" />
-              <span>{item.label}</span>
-              {item.badge !== undefined && item.badge > 0 && (
-                <span className="rr-nav-badge alert tabular-nums">
-                  {item.badge < 10 ? `0${item.badge}` : item.badge}
-                </span>
-              )}
-            </button>
-          );
-        })}
-      </nav>
+      {/* Navigation Groups */}
+      <div className="rr-sidebar-nav">
+        <div className="rr-nav-group">
+          <span className="rr-nav-group-title">COMMAND CENTER</span>
+          {commandItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                className={`rr-nav-button ${isActive ? 'active' : ''}`}
+                onClick={() => onSelectTab(item.id)}
+              >
+                <Icon size={14} className="rr-nav-btn-icon" />
+                <span className="rr-nav-btn-label">{item.label}</span>
+                {item.badge !== undefined && item.badge > 0 && (
+                  <span className="rr-nav-btn-badge font-mono">
+                    {item.badge < 10 ? `0${item.badge}` : item.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
 
-      {/* Operator Status Footer */}
-      <div className="rr-sidebar-footer">
-        <div className="rr-operator-card">
-          <div className="rr-operator-avatar">
-            CMD
-          </div>
-          <div className="rr-operator-info">
-            <span className="rr-operator-name">NDMA Gujarat Desk</span>
-            <span className="rr-operator-role">
-              <ShieldCheck size={11} color="#10b981" /> Tier-1 Controller
-            </span>
+        <div className="rr-sidebar-divider" />
+
+        <div className="rr-nav-group">
+          <span className="rr-nav-group-title">SYSTEM</span>
+          <button
+            type="button"
+            className={`rr-nav-button ${activeTab === 'settings' ? 'active' : ''}`}
+            onClick={() => onSelectTab('settings')}
+          >
+            <Settings size={14} className="rr-nav-btn-icon" />
+            <span className="rr-nav-btn-label">Settings</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Bottom Operational Desk */}
+      <div className="rr-sidebar-bottom">
+        <div className="rr-desk-indicator">
+          <span className="rr-desk-dot" />
+          <div className="rr-desk-meta">
+            <span className="rr-desk-title">NDMA Operations Desk</span>
+            <span className="rr-desk-subtitle">National Controller Tier-1</span>
           </div>
         </div>
       </div>

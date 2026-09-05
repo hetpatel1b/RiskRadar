@@ -1,0 +1,48 @@
+import { AlertItem } from '../types';
+
+export const MOCK_ALERTS: AlertItem[] = [
+  {
+    id: 'alt-vadodara-flood',
+    severity: 'critical',
+    hazardType: 'flood',
+    location: 'Vadodara',
+    state: 'Gujarat',
+    timestamp: '10:08:42 IST',
+    summary: 'Vishwamitri river stage at 4.72m exceeds danger mark (4.50m). Immediate ward-level evacuation active.',
+    lat: 22.3072,
+    lng: 73.1812,
+  },
+  {
+    id: 'alt-mumbai-rainfall',
+    severity: 'warning',
+    hazardType: 'heavy_rainfall',
+    location: 'Mumbai',
+    state: 'Maharashtra',
+    timestamp: '10:07:15 IST',
+    summary: 'Intense precipitation band (48.4 mm/hr) approaching southern coastal belt. Pluvial waterlogging warning.',
+    lat: 19.0760,
+    lng: 72.8777,
+  },
+  {
+    id: 'alt-wayanad-landslide',
+    severity: 'watch',
+    hazardType: 'landslide',
+    location: 'Wayanad',
+    state: 'Kerala',
+    timestamp: '10:06:50 IST',
+    summary: 'Sustained precipitation causing Western Ghats soil saturation threshold crossing (86%). Debris flow watch.',
+    lat: 11.6854,
+    lng: 76.1320,
+  },
+  {
+    id: 'alt-uttarakhand-fire',
+    severity: 'watch',
+    hazardType: 'forest_fire',
+    location: 'Dehradun',
+    state: 'Uttarakhand',
+    timestamp: '10:05:30 IST',
+    summary: 'Thermal anomaly detected in Garhwal sub-Himalayan forest division. Ground reconnaissance alert dispatched.',
+    lat: 30.3165,
+    lng: 78.0322,
+  },
+];

@@ -1,48 +1,49 @@
 :root {
-  /* Surface Palette (Near-Black Layering) */
-  --bg-canvas: #07090d;
-  --bg-sidebar: #090c12;
-  --bg-surface-base: #0c1017;
-  --bg-surface-elevated: #111722;
-  --bg-surface-highlight: #161e2c;
-  --bg-surface-overlay: rgba(12, 16, 23, 0.88);
+  /* ============================================================
+     STRATEGIC GEOSPATIAL COMMAND — OBSIDIAN PALETTE
+     ============================================================ */
+  /* Level 1: Canvas Background */
+  --bg-obsidian: #080B10;
   
-  /* Borders & Dividers */
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --border-medium: rgba(255, 255, 255, 0.12);
-  --border-strong: rgba(255, 255, 255, 0.2);
-  --border-cyan: rgba(0, 240, 255, 0.35);
-
-  /* Primary Accent: Electric Cyan */
-  --accent-cyan: #00f0ff;
-  --accent-cyan-hover: #38f4ff;
-  --accent-cyan-dim: rgba(0, 240, 255, 0.12);
-  --accent-cyan-glow: 0 0 16px rgba(0, 240, 255, 0.25);
-  --accent-cyan-subtle-glow: 0 0 8px rgba(0, 240, 255, 0.15);
-
-  /* Semantic Hazard System */
-  --hazard-safe: #10b981;
-  --hazard-safe-bg: rgba(16, 185, 129, 0.12);
-  --hazard-watch: #f59e0b;
-  --hazard-watch-bg: rgba(245, 158, 11, 0.12);
-  --hazard-warning: #f97316;
-  --hazard-warning-bg: rgba(249, 115, 22, 0.14);
-  --hazard-critical: #ef4444;
-  --hazard-critical-bg: rgba(239, 68, 68, 0.15);
-  --hazard-info: #00f0ff;
-  --hazard-info-bg: rgba(0, 240, 255, 0.12);
-
-  /* Text & Foreground */
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-disabled: #475569;
-  --text-inverse: #07090d;
-
-  /* Typography */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Level 2: Primary Operational Surfaces */
+  --surface-secondary: #0D1219;
   
-  /* Spacing Scale */
+  /* Level 3: Elevated & Interactive Surfaces */
+  --surface-elevated: #131923;
+  --surface-soft: #171E28;
+  --surface-overlay: rgba(13, 18, 25, 0.94);
+
+  /* Hairline Structural Borders (Low Contrast) */
+  --border-obsidian: #252E39;
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-focus: #3A4757;
+
+  /* Typography Colors */
+  --text-primary: #F2F5F7;      /* Warm white / soft white */
+  --text-secondary: #9AA6B2;    /* Muted cool gray */
+  --text-muted: #647180;        /* Low-emphasis tactical gray */
+
+  /* Precision System Signals (<15% total visual weight) */
+  --signal-cyan: #63D7E5;       /* Arctic Cyan - strictly for active signals */
+  --signal-cyan-subtle: rgba(99, 215, 229, 0.08);
+  --signal-blue: #759BFF;
+  --signal-blue-subtle: rgba(117, 155, 255, 0.08);
+
+  /* Semantic Hazard Colors (~5%) */
+  --semantic-safe: #36C98F;
+  --semantic-safe-bg: rgba(54, 201, 143, 0.10);
+  --semantic-watch: #D9B94C;
+  --semantic-watch-bg: rgba(217, 185, 76, 0.10);
+  --semantic-warning: #F09A3E;
+  --semantic-warning-bg: rgba(240, 154, 62, 0.10);
+  --semantic-critical: #F05D6B;
+  --semantic-critical-bg: rgba(240, 93, 107, 0.12);
+
+  /* Typography Families */
+  --font-sans: 'Geist', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SFMono-Regular', Consolas, monospace;
+
+  /* Disciplined Spacing Scale */
   --space-4: 4px;
   --space-8: 8px;
   --space-12: 12px;
@@ -51,22 +52,19 @@
   --space-24: 24px;
   --space-32: 32px;
   --space-40: 40px;
-  --space-48: 48px;
 
-  /* Radii */
+  /* Precision Corner Radii (6-8px for panels, 4px for controls) */
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
-  --radius-xl: 12px;
-  --radius-full: 9999px;
 
-  /* Transitions */
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  /* Architectural Shadows */
+  --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-panel: 0 4px 16px rgba(0, 0, 0, 0.6);
 
-  /* Shadows */
-  --shadow-panel: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.6);
+  /* Micro-Motion Transitions (180-260ms) */
+  --trans-fast: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  --trans-normal: 240ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 *, *::before, *::after {
@@ -78,11 +76,12 @@
 html, body {
   width: 100%;
   height: 100%;
-  background-color: var(--bg-canvas);
+  height: 100dvh;
+  background-color: var(--bg-obsidian);
   color: var(--text-primary);
-  font-family: var(--font-family);
-  font-size: 14px;
-  line-height: 1.5;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.45;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
@@ -91,139 +90,130 @@ html, body {
 #root {
   width: 100%;
   height: 100%;
+  height: 100dvh;
   display: flex;
+  overflow: hidden;
+  min-width: 0;
 }
 
-/* Custom Scrollbar for Near-Black UI */
+/* Tabular Monospace Values */
+.font-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Custom Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
+  height: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--bg-obsidian);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: var(--radius-full);
+  background: var(--border-obsidian);
+  border-radius: var(--radius-sm);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.22);
+  background: var(--border-focus);
 }
 
-/* Tabular numbers for high operational legibility */
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum";
+/* Operational Status Indicator Dot */
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
 }
+.status-dot.safe { background: var(--semantic-safe); }
+.status-dot.watch { background: var(--semantic-watch); }
+.status-dot.warning { background: var(--semantic-warning); }
+.status-dot.critical { background: var(--semantic-critical); }
+.status-dot.cyan { background: var(--signal-cyan); }
+.status-dot.offline { background: var(--text-muted); }
 
-/* Utility Badges & Tags */
-.status-pill {
+/* Tactical Status Badges */
+.status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 2px 8px;
+  gap: 4px;
+  padding: 1px 6px;
   border-radius: var(--radius-sm);
-  font-size: 11px;
+  font-size: 9.5px;
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.status-pill.safe {
-  background: var(--hazard-safe-bg);
-  color: var(--hazard-safe);
-  border: 1px solid rgba(16, 185, 129, 0.25);
+.status-badge.critical {
+  background: var(--semantic-critical-bg);
+  color: var(--semantic-critical);
+  border: 1px solid rgba(240, 93, 107, 0.28);
 }
 
-.status-pill.watch {
-  background: var(--hazard-watch-bg);
-  color: var(--hazard-watch);
-  border: 1px solid rgba(245, 158, 11, 0.25);
+.status-badge.warning {
+  background: var(--semantic-warning-bg);
+  color: var(--semantic-warning);
+  border: 1px solid rgba(240, 154, 62, 0.28);
 }
 
-.status-pill.warning {
-  background: var(--hazard-warning-bg);
-  color: var(--hazard-warning);
-  border: 1px solid rgba(249, 115, 22, 0.3);
+.status-badge.watch {
+  background: var(--semantic-watch-bg);
+  color: var(--semantic-watch);
+  border: 1px solid rgba(217, 185, 76, 0.28);
 }
 
-.status-pill.critical {
-  background: var(--hazard-critical-bg);
-  color: var(--hazard-critical);
-  border: 1px solid rgba(239, 68, 68, 0.35);
+.status-badge.safe {
+  background: var(--semantic-safe-bg);
+  color: var(--semantic-safe);
+  border: 1px solid rgba(54, 201, 143, 0.28);
 }
 
-.status-pill.cyan {
-  background: var(--hazard-info-bg);
-  color: var(--accent-cyan);
-  border: 1px solid rgba(0, 240, 255, 0.25);
+.status-badge.neutral {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-obsidian);
 }
 
-/* Pulse Dot */
-.pulse-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  position: relative;
-}
-
-.pulse-dot::after {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  border-radius: 50%;
-  background: inherit;
-  opacity: 0.6;
-  animation: pulse-ring 2.4s cubic-bezier(0.24, 0, 0.38, 1) infinite;
-}
-
-@keyframes pulse-ring {
-  0% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.9); opacity: 0; }
-  100% { transform: scale(1.9); opacity: 0; }
-}
-
-/* Dark Map Overrides */
+/* Leaflet Container & Cartographic Overrides */
 .leaflet-container {
-  background: #080b0f !important;
-  font-family: var(--font-family) !important;
+  background: #080B10 !important;
+  font-family: var(--font-sans) !important;
   width: 100%;
   height: 100%;
 }
 
-/* Compact Unobtrusive Legal Attribution */
+/* Quiet Legal Attribution */
 .leaflet-control-attribution {
-  background: rgba(7, 9, 13, 0.75) !important;
+  background: rgba(8, 11, 16, 0.88) !important;
   backdrop-filter: blur(4px);
-  color: #64748b !important;
-  font-size: 10px !important;
+  color: var(--text-muted) !important;
+  font-size: 9px !important;
   padding: 2px 6px !important;
-  border-radius: 3px 0 0 0 !important;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-bottom: none;
-  border-right: none;
+  border-radius: 4px 0 0 0 !important;
+  border: 1px solid var(--border-obsidian) !important;
+  border-bottom: none !important;
+  border-right: none !important;
 }
 
 .leaflet-control-attribution a {
-  color: #94a3b8 !important;
+  color: var(--text-secondary) !important;
   text-decoration: none;
 }
 
 .leaflet-control-attribution a:hover {
-  color: var(--accent-cyan) !important;
-  text-decoration: underline;
+  color: var(--signal-cyan) !important;
 }
 
-/* Custom RiskRadar Leaflet Popups */
+/* Clean Telemetry Popups */
 .leaflet-popup-content-wrapper {
-  background: var(--bg-surface-elevated) !important;
+  background: var(--surface-elevated) !important;
   color: var(--text-primary) !important;
-  border: 1px solid var(--border-cyan) !important;
+  border: 1px solid var(--border-obsidian) !important;
   border-radius: var(--radius-md) !important;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8), var(--accent-cyan-subtle-glow) !important;
+  box-shadow: var(--shadow-panel) !important;
   padding: 0 !important;
   overflow: hidden;
 }
@@ -233,22 +223,33 @@ html, body {
   line-height: 1.4 !important;
 }
 
-.leaflet-popup-tip-container {
-  overflow: visible !important;
-}
-
 .leaflet-popup-tip {
-  background: var(--bg-surface-elevated) !important;
-  border: 1px solid var(--border-cyan) !important;
+  background: var(--surface-elevated) !important;
+  border: 1px solid var(--border-obsidian) !important;
   box-shadow: none !important;
 }
 
 .leaflet-popup-close-button {
   color: var(--text-muted) !important;
   padding: 6px 8px !important;
-  font-size: 14px !important;
+  font-size: 13px !important;
 }
 
 .leaflet-popup-close-button:hover {
-  color: var(--accent-cyan) !important;
+  color: var(--text-primary) !important;
+}
+
+.leaflet-tooltip-dark {
+  background: var(--surface-elevated) !important;
+  border: 1px solid var(--border-obsidian) !important;
+  color: var(--text-primary) !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 4px 8px !important;
+  font-family: var(--font-sans) !important;
+  font-size: 11px !important;
+  box-shadow: var(--shadow-subtle) !important;
+}
+
+.leaflet-tooltip-dark::before {
+  border-top-color: var(--border-obsidian) !important;
 }

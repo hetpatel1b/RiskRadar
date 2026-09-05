@@ -1,58 +1,70 @@
 import React from 'react';
-import { BrainCircuit, Sparkles } from 'lucide-react';
-import { MOCK_AI_ASSESSMENT } from '../../data/mockData';
+import { MOCK_AI_ASSESSMENT } from '../../data/risk';
 import './AiRiskCard.css';
 
 export const AiRiskCard: React.FC = () => {
   const assessment = MOCK_AI_ASSESSMENT;
 
+  // Arc calculation for precision SVG gauge (semi-circle / 180 deg)
+  const radius = 30;
+  const strokeWidth = 3;
+  const circumference = Math.PI * radius;
+  const strokeDashoffset = circumference - (assessment.score / 100) * circumference;
+
   return (
-    <div className="rr-ai-card" aria-label="AI Risk Assessment Card">
-      {/* Header */}
-      <div className="rr-ai-header">
-        <div className="rr-ai-title-wrap">
-          <BrainCircuit size={15} color="var(--accent-cyan)" />
-          <span className="rr-ai-title">AI Risk Assessment</span>
+    <div className="rr-ai-section" aria-label="AI Risk Assessment">
+      {/* Section Header */}
+      <div className="rr-ai-section-header">
+        <span className="rr-ai-section-title">AI RISK ASSESSMENT</span>
+        <span className="status-badge critical">HIGH RISK</span>
+      </div>
+
+      {/* Primary Metric & Risk Meter */}
+      <div className="rr-ai-primary-row">
+        <div className="rr-ai-gauge-block">
+          <svg className="rr-ai-arc-svg" width="76" height="44" viewBox="0 0 76 44">
+            <path
+              d="M 8 38 A 30 30 0 0 1 68 38"
+              fill="none"
+              stroke="var(--border-obsidian)"
+              strokeWidth={strokeWidth}
+              strokeLinecap="round"
+            />
+            <path
+              d="M 8 38 A 30 30 0 0 1 68 38"
+              fill="none"
+              stroke="var(--semantic-critical)"
+              strokeWidth={strokeWidth}
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+            />
+          </svg>
+          <div className="rr-ai-gauge-val">
+            <span className="rr-ai-main-num font-mono">{assessment.score}%</span>
+          </div>
         </div>
-        <div className="rr-ai-badge">
-          <Sparkles size={11} />
-          <span>Predictive Model</span>
+
+        <div className="rr-ai-key-stats">
+          <div className="rr-ai-sub-stat">
+            <span className="rr-sub-stat-label">Hazard Probability</span>
+            <span className="rr-sub-stat-val font-mono critical">{assessment.hazardProbability}</span>
+          </div>
+          <div className="rr-ai-sub-stat">
+            <span className="rr-sub-stat-label">Affected Area</span>
+            <span className="rr-sub-stat-val font-mono">{assessment.expectedAffectedArea}</span>
+          </div>
         </div>
       </div>
 
-      {/* Primary Score Row */}
-      <div className="rr-ai-score-row">
-        <div className="rr-ai-score-group">
-          <span className="rr-ai-score-num tabular-nums">{assessment.score}%</span>
-          <span className="rr-ai-score-level">{assessment.severity}</span>
-        </div>
-        <span className="status-pill critical">Escalated</span>
-      </div>
-
-      {/* Secondary Metrics */}
-      <div className="rr-ai-metrics-grid tabular-nums">
-        <div className="rr-ai-sub-metric">
-          <span className="rr-ai-sub-label">Hazard Probability</span>
-          <span className="rr-ai-sub-value" style={{ color: '#ef4444' }}>
-            {assessment.hazardProbability}
-          </span>
-        </div>
-        <div className="rr-ai-sub-metric">
-          <span className="rr-ai-sub-label">Expected Affected Area</span>
-          <span className="rr-ai-sub-value" style={{ color: '#fb923c' }}>
-            {assessment.expectedAffectedArea}
-          </span>
-        </div>
-      </div>
-
-      {/* Key Drivers / Why This Risk */}
-      <div className="rr-ai-drivers-section">
-        <span className="rr-ai-drivers-title">Why This Risk?</span>
-        <div className="rr-ai-drivers-list">
+      {/* Why This Risk */}
+      <div className="rr-ai-drivers-block">
+        <span className="rr-ai-drivers-label">WHY THIS RISK?</span>
+        <div className="rr-ai-drivers-row">
           {assessment.keyDrivers.map((driver) => (
-            <div key={driver.label} className="rr-ai-driver-pill">
-              <span className="rr-driver-pip" />
-              <span>{driver.label}</span>
+            <div key={driver.label} className="rr-driver-item">
+              <span className="rr-driver-dot" />
+              <span className="rr-driver-name">{driver.label}</span>
             </div>
           ))}
         </div>

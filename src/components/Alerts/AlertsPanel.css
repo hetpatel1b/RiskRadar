@@ -1,109 +1,142 @@
-.rr-alerts-panel {
-  background: var(--bg-surface-base);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 12px var(--space-16);
+.rr-incidents-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-12);
+  flex: 1;
 }
 
-.rr-alerts-header {
+.rr-incidents-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.rr-alerts-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.rr-alerts-title {
+.rr-incidents-section-title {
   font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   color: var(--text-secondary);
 }
 
-.rr-alerts-count {
-  font-size: 10.5px;
-  font-weight: 600;
-  color: var(--hazard-warning);
+.rr-incidents-badge {
+  font-size: 10px;
+  color: var(--semantic-warning);
 }
 
-.rr-alerts-list {
+/* Primary Critical Incident Box */
+.rr-critical-incident-box {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-obsidian);
+  border-left: 2.5px solid var(--semantic-critical);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.rr-alert-item {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border-subtle);
+.rr-incident-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rr-incident-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rr-focus-gis-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: 1px solid var(--border-obsidian);
+  color: var(--signal-cyan);
+  padding: 2px 7px;
   border-radius: var(--radius-sm);
-  padding: 8px 10px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+  font-family: var(--font-sans);
+}
+
+.rr-focus-gis-action:hover {
+  background: var(--signal-cyan-subtle);
+  border-color: var(--signal-cyan);
+}
+
+.rr-incident-details {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  border-left-width: 3px;
 }
 
-.rr-alert-item:hover {
-  background: rgba(255, 255, 255, 0.04);
-  transform: translateX(2px);
+.rr-incident-city {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
-.rr-alert-item.critical {
-  border-left-color: var(--hazard-critical);
+.rr-incident-text {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  line-height: 1.4;
 }
 
-.rr-alert-item.warning {
-  border-left-color: var(--hazard-warning);
-}
-
-.rr-alert-item.watch {
-  border-left-color: var(--hazard-watch);
-}
-
-.rr-alert-top-row {
+/* Secondary Incidents */
+.rr-secondary-incidents-wrap {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.rr-alert-badges {
-  display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 6px;
 }
 
-.rr-alert-time {
-  font-size: 10px;
+.rr-secondary-heading {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   color: var(--text-muted);
 }
 
-.rr-alert-location-row {
+.rr-secondary-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rr-sec-incident-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-obsidian);
+  border-radius: var(--radius-sm);
+  padding: 5px 8px;
+  cursor: pointer;
+  transition: background var(--trans-fast);
 }
 
-.rr-alert-location {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #ffffff;
+.rr-sec-incident-row:hover {
+  background: var(--surface-soft);
+  border-color: var(--border-focus);
 }
 
-.rr-alert-summary {
+.rr-sec-left {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.rr-sec-city {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.rr-sec-hazard {
   font-size: 10.5px;
-  color: var(--text-secondary);
-  line-height: 1.35;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: var(--text-muted);
 }

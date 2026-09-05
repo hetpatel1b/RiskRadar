@@ -1,121 +1,222 @@
-.rr-infra-panel {
-  background: var(--bg-surface-base);
-  border: 1px solid var(--border-subtle);
+.rr-infra-instrument {
+  background: var(--surface-secondary);
+  border: 1px solid var(--border-obsidian);
   border-radius: var(--radius-lg);
-  padding: 12px var(--space-16);
+  padding: 14px 18px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
+/* 1. Header */
 .rr-infra-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.rr-infra-title-wrap {
-  display: flex;
-  align-items: center;
+  min-width: 0;
   gap: 8px;
 }
 
 .rr-infra-title {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.rr-infra-health-tag {
+.rr-infra-status-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.rr-infra-status-text {
   font-size: 10.5px;
   font-weight: 600;
-  color: var(--hazard-safe);
+  letter-spacing: 0.06em;
+  color: var(--semantic-safe);
+  white-space: nowrap;
 }
 
-.rr-infra-metrics-row {
+/* 2. Integrated 5-Metric Strip */
+.rr-infra-metrics-deck {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-}
-
-.rr-infra-metric-box {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border-subtle);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-obsidian);
   border-radius: var(--radius-sm);
-  padding: 6px 8px;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.rr-infra-metric-unit {
+  padding: 6px 10px;
+  border-right: 1px solid var(--border-obsidian);
   display: flex;
   flex-direction: column;
-  gap: 2px;
-}
-
-.rr-infra-metric-label {
-  font-size: 9px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
-}
-
-.rr-infra-metric-value {
-  font-size: 15px;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-/* Visual Topology */
-.rr-topology-container {
-  padding: 8px 10px;
-  background: rgba(0, 0, 0, 0.25);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-subtle);
-  display: flex;
-  flex-direction: column;
+  justify-content: center;
   gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+  transition: background var(--trans-fast);
 }
 
-.rr-topology-title {
-  font-size: 9px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+.rr-infra-metric-unit.last {
+  border-right: none;
+}
+
+.rr-infra-metric-unit:hover {
+  background: var(--surface-soft);
+}
+
+.rr-metric-unit-label {
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  white-space: normal;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.rr-metric-unit-val {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.rr-metric-unit-val.safe {
+  color: var(--semantic-safe);
+}
+
+.rr-metric-unit-val.blue {
+  color: var(--signal-blue);
+}
+
+.rr-metric-unit-val.muted {
   color: var(--text-muted);
 }
 
-.rr-topology-nodes-row {
+/* 3. Subtle Hairline Separator */
+.rr-infra-internal-divider {
+  height: 1px;
+  background: var(--border-obsidian);
+  margin: 1px 0;
+  opacity: 0.6;
+}
+
+/* 4. Dedicated Horizontal Topology Strip (45-50px) */
+.rr-infra-topology-flow {
+  height: 46px;
+  min-height: 46px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-obsidian);
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  gap: 4px;
 }
 
-.rr-topo-node {
+.rr-topo-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.rr-topo-head {
   display: flex;
   align-items: center;
   gap: 5px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border-subtle);
-  padding: 3px 7px;
-  border-radius: var(--radius-sm);
-}
-
-.rr-topo-pip {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--hazard-safe);
-  box-shadow: 0 0 5px var(--hazard-safe);
+  min-width: 0;
 }
 
 .rr-topo-name {
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.rr-topo-arrow {
-  color: var(--text-disabled);
+.rr-topo-sub {
+  font-size: 9px;
+  color: var(--text-muted);
+  padding-left: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Connector Link & Data Signal */
+.rr-topo-link {
   display: flex;
   align-items: center;
+  gap: 3px;
+  flex: 0 1 28px;
+  min-width: 12px;
+  max-width: 36px;
+  justify-content: center;
+}
+
+.rr-topo-trace {
+  position: relative;
+  width: 100%;
+  height: 1px;
+  background: var(--border-obsidian);
+  overflow: hidden;
+}
+
+.rr-topo-flow-dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 1px;
+  background: var(--signal-cyan);
+  animation: signalFlow 3s linear infinite;
+}
+
+@keyframes signalFlow {
+  0% {
+    transform: translateX(-6px);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.9;
+  }
+  75% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateX(36px);
+    opacity: 0;
+  }
+}
+
+.rr-topo-pointer {
+  font-size: 10px;
+  color: var(--text-muted);
 }

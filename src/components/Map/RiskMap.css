@@ -1,0 +1,306 @@
+.rr-riskmap-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-obsidian);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-obsidian);
+  display: flex;
+  flex-direction: column;
+}
+
+.rr-riskmap-canvas {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+}
+
+/* Floating HUD Top */
+.rr-map-hud-top {
+  position: absolute;
+  top: var(--space-12);
+  left: var(--space-12);
+  right: var(--space-12);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+  z-index: 500;
+}
+
+.rr-map-title-badge {
+  pointer-events: auto;
+  background: var(--surface-overlay);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-obsidian);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.rr-hud-shield-icon {
+  color: var(--signal-cyan);
+}
+
+.rr-map-title-badge strong {
+  color: var(--text-primary);
+  font-weight: 550;
+}
+
+.rr-map-hud-actions {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Layer Control */
+.rr-layers-control-wrap {
+  position: relative;
+}
+
+.rr-layers-trigger-btn {
+  background: var(--surface-overlay);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-obsidian);
+  color: var(--text-primary);
+  height: 28px;
+  padding: 0 9px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+
+.rr-layers-trigger-btn:hover {
+  background: var(--surface-elevated);
+  border-color: var(--border-focus);
+}
+
+.rr-layers-trigger-btn.active {
+  border-color: var(--signal-cyan);
+  color: var(--signal-cyan);
+}
+
+.rr-layers-icon {
+  color: var(--text-secondary);
+}
+
+.rr-layers-count {
+  font-size: 9.5px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1px 4px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+}
+
+.rr-chevron-icon {
+  transition: transform var(--trans-fast);
+}
+
+.rr-chevron-icon.open {
+  transform: rotate(180deg);
+}
+
+.rr-layers-dropdown {
+  position: absolute;
+  top: 34px;
+  right: 0;
+  width: 200px;
+  background: var(--surface-overlay);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-obsidian);
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+  box-shadow: var(--shadow-panel);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 550;
+}
+
+.rr-layers-dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rr-layers-dropdown-meta {
+  color: var(--signal-cyan);
+}
+
+.rr-layers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rr-layer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--trans-fast);
+}
+
+.rr-layer-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.rr-layer-info {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--text-primary);
+}
+
+.rr-layer-color-pip {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.rr-layer-checkbox {
+  width: 12px;
+  height: 12px;
+  accent-color: var(--signal-cyan);
+  cursor: pointer;
+}
+
+/* Map Action Controls */
+.rr-map-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rr-map-control-btn {
+  background: var(--surface-overlay);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-obsidian);
+  color: var(--text-secondary);
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+}
+
+.rr-map-control-btn:hover {
+  color: var(--text-primary);
+  background: var(--surface-elevated);
+  border-color: var(--border-focus);
+}
+
+/* Cartographic Legend */
+.rr-map-legend {
+  position: absolute;
+  bottom: var(--space-12);
+  left: var(--space-12);
+  background: var(--surface-overlay);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-obsidian);
+  border-radius: var(--radius-sm);
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  color: var(--text-secondary);
+  z-index: 500;
+}
+
+.rr-legend-label {
+  font-weight: 550;
+  color: var(--text-primary);
+}
+
+.rr-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Sensor Operational Nodes */
+.rr-marker-container {
+  background: transparent !important;
+  border: none !important;
+}
+
+.rr-map-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.rr-node-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--bg-obsidian);
+  transition: transform var(--trans-fast);
+}
+
+.rr-map-node:hover .rr-node-dot {
+  transform: scale(1.35);
+}
+
+.rr-node-dot.online { background: var(--semantic-safe); }
+.rr-node-dot.warning { background: var(--semantic-warning); }
+.rr-node-dot.critical { background: var(--semantic-critical); }
+.rr-node-dot.offline { background: var(--text-muted); }
+
+.rr-map-node.selected .rr-node-dot {
+  outline: 2px solid var(--signal-cyan);
+  outline-offset: 1px;
+}
+
+/* Hover-Only Location Labels (Always visible for active incident Vadodara) */
+.rr-node-tag {
+  margin-top: 2px;
+  background: rgba(8, 11, 16, 0.94);
+  border: 1px solid var(--border-obsidian);
+  border-radius: 2px;
+  padding: 0 3px;
+  font-size: 8.5px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(2px);
+  transition: opacity var(--trans-fast), transform var(--trans-fast);
+}
+
+.rr-map-node:hover .rr-node-tag,
+.rr-map-node.selected .rr-node-tag,
+.rr-map-node.incident .rr-node-tag {
+  opacity: 1;
+  transform: translateY(0);
+}

@@ -1,88 +1,93 @@
-.rr-kpi-strip {
-  background: var(--bg-surface-elevated);
-  border-bottom: 1px solid var(--border-subtle);
-  padding: var(--space-8) var(--space-24);
+.rr-situation-ribbon {
+  height: 68px;
+  min-height: 68px;
+  max-height: 68px;
+  flex-shrink: 0;
+  width: 100%;
+  min-width: 0;
+  background: var(--surface-secondary);
+  border-bottom: 1px solid var(--border-obsidian);
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: var(--space-12);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   align-items: center;
+  user-select: none;
+  overflow: hidden;
 }
 
-.rr-kpi-cell {
+.rr-ribbon-cell {
+  height: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  padding: var(--space-8) var(--space-12);
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid var(--border-subtle);
-  position: relative;
-  transition: border-color var(--transition-fast);
+  justify-content: center;
+  padding: 0 var(--space-16);
+  border-right: 1px solid var(--border-obsidian);
+  gap: 2px;
+  transition: background var(--trans-fast);
+  overflow: hidden;
 }
 
-.rr-kpi-cell:hover {
-  border-color: var(--border-medium);
+.rr-ribbon-cell:last-child {
+  border-right: none;
 }
 
-.rr-kpi-top {
+.rr-ribbon-cell:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.rr-ribbon-label-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 2px;
+  min-width: 0;
 }
 
-.rr-kpi-label {
+.rr-ribbon-label {
   font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.rr-kpi-icon {
-  width: 14px;
-  height: 14px;
-  opacity: 0.7;
-}
-
-.rr-kpi-value-row {
+.rr-ribbon-val-row {
   display: flex;
   align-items: baseline;
-  gap: 6px;
+  gap: 8px;
+  min-width: 0;
 }
 
-.rr-kpi-value {
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+.rr-ribbon-val {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--text-primary);
+  white-space: nowrap;
 }
 
-.rr-kpi-cell.hazards .rr-kpi-value {
-  color: var(--hazard-critical);
-}
-
-.rr-kpi-cell.alerts .rr-kpi-value {
-  color: var(--hazard-warning);
-}
-
-.rr-kpi-cell.area .rr-kpi-value {
-  color: #fb923c;
-}
-
-.rr-kpi-cell.sensors .rr-kpi-value {
-  color: var(--accent-cyan);
-}
-
-.rr-kpi-cell.ai .rr-kpi-value {
-  color: #f43f5e;
-}
-
-.rr-kpi-cell.health .rr-kpi-value {
-  color: var(--hazard-safe);
-}
-
-.rr-kpi-subtext {
+.rr-ribbon-sub {
   font-size: 10px;
-  color: var(--text-secondary);
-  margin-top: 1px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Subtle Semantic Accents */
+.rr-ribbon-cell.critical .rr-ribbon-val {
+  color: var(--semantic-critical);
+}
+
+.rr-ribbon-cell.warning .rr-ribbon-val {
+  color: var(--semantic-warning);
+}
+
+.rr-ribbon-cell.cyan .rr-ribbon-val {
+  color: var(--signal-cyan);
+}
+
+.rr-ribbon-cell.safe .rr-ribbon-val {
+  color: var(--semantic-safe);
 }

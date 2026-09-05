@@ -2,83 +2,86 @@ import React, { useState } from 'react';
 import { Sidebar } from './components/Sidebar/Sidebar';
 import { Header } from './components/Header/Header';
 import { KpiStrip } from './components/KpiStrip/KpiStrip';
-import { GisMap } from './components/Map/GisMap';
+import { RiskMap } from './components/Map/RiskMap';
 import { AiRiskCard } from './components/AiRiskCard/AiRiskCard';
-import { EnvironmentalPanel } from './components/Environment/EnvironmentalPanel';
 import { AlertsPanel } from './components/Alerts/AlertsPanel';
+import { EnvironmentalPanel } from './components/Environment/EnvironmentalPanel';
 import { InfrastructurePanel } from './components/Infrastructure/InfrastructurePanel';
 import {
-  INITIAL_KPIS,
   MOCK_SENSORS,
   MOCK_HAZARD_ZONES,
   MOCK_ALERTS,
-} from './data/mockData';
-import { SensorData, AlertItem } from './types';
+  INITIAL_KPIS,
+} from './data';
+import { SensorData, AlertItem, HazardType } from './types';
 import './App.css';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [selectedSensor, setSelectedSensor] = useState<SensorData | null>(null);
   const [focusedLocation, setFocusedLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [highlightedHazard, setHighlightedHazard] = useState<HazardType | null>(null);
 
-  // Interaction Foundation: Clicking an alert focuses the map and highlights relevant sector
+  // When an alert or focus action is triggered: fly map to coordinates & highlight hazard
   const handleSelectAlert = (alert: AlertItem) => {
     setFocusedLocation({ lat: alert.lat, lng: alert.lng });
-  };
+    setHighlightedHazard(alert.hazardType);
 
-  // Interaction Foundation: Selecting a sensor from map or sensor list
-  const handleSelectSensor = (sensor: SensorData | null) => {
-    setSelectedSensor(sensor);
+    // If alert matches a sensor (e.g. Vadodara), select that sensor
+    const matchingSensor = MOCK_SENSORS.find(
+      (s) => Math.abs(s.lat - alert.lat) < 0.05 && Math.abs(s.lng - alert.lng) < 0.05
+    );
+    if (matchingSensor) {
+      setSelectedSensor(matchingSensor);
+    }
   };
 
   return (
-    <div className="rr-app">
-      {/* 1. Expanded Left Navigation Sidebar (240px) */}
+    <div className="rr-command-app">
+      {/* 1. Left Strategic Navigation (220px) */}
       <Sidebar
         activeTab={activeTab}
         onSelectTab={setActiveTab}
         alertCount={MOCK_ALERTS.length}
       />
 
-      {/* Main Workspace Area */}
-      <div className="rr-main-workspace">
-        {/* 2. Compact Top System Header */}
-        <Header
-          lastUpdated="10:08:42 AM"
-          regionName="Western Corridor (Gujarat Command)"
-        />
+      {/* Main Operational Command Console */}
+      <div className="rr-command-main">
+        {/* 2. Compact Command Header (54px) */}
+        <Header lastSync="10:10:44 IST" />
 
-        {/* 3. Compact Situation-Awareness KPI Strip */}
+        {/* 3. National Situation Ribbon (66px) */}
         <KpiStrip metrics={INITIAL_KPIS} />
 
-        {/* 4. Desktop-First Content Layout */}
-        <main className="rr-dashboard-content">
-          {/* Primary GIS Hero Region (~40% total dashboard visual space) */}
-          <section className="rr-content-hero-col">
-            <GisMap
-              sensors={MOCK_SENSORS}
-              hazardZones={MOCK_HAZARD_ZONES}
-              selectedSensorId={selectedSensor?.id || null}
-              onSelectSensor={handleSelectSensor}
-              focusedLocation={focusedLocation}
-            />
-          </section>
+        {/* 4. Strategic Operations Workspace */}
+        <main className="rr-command-workspace">
+          {/* Upper Operational Stage (GIS Dominant ~60%, Intelligence Rail ~40%) */}
+          <div className="rr-upper-stage">
+            {/* Real Interactive GIS Hero Surface */}
+            <section className="rr-gis-stage" aria-label="National Multi-Hazard GIS Surface">
+              <RiskMap
+                sensors={MOCK_SENSORS}
+                hazardZones={MOCK_HAZARD_ZONES}
+                selectedSensorId={selectedSensor?.id || null}
+                onSelectSensor={setSelectedSensor}
+                focusedLocation={focusedLocation}
+                highlightedHazardType={highlightedHazard}
+              />
+            </section>
 
-          {/* Operational Intelligence Column */}
-          <section className="rr-content-side-col">
-            {/* AI Risk Assessment Foundation */}
-            <AiRiskCard />
+            {/* Continuous Strategic Intelligence Rail */}
+            <aside className="rr-intel-rail" aria-label="Strategic Intelligence Rail">
+              <AiRiskCard />
+              <AlertsPanel
+                alerts={MOCK_ALERTS}
+                onSelectAlert={handleSelectAlert}
+              />
+            </aside>
+          </div>
 
-            {/* Real-time Environmental Telemetry Foundation */}
+          {/* Lower Telemetry Deck (Environmental Instrumentation + Infrastructure Pipeline) */}
+          <section className="rr-lower-telemetry-band" aria-label="Telemetry and Infrastructure Band">
             <EnvironmentalPanel />
-
-            {/* Early-Warning Alerts Foundation */}
-            <AlertsPanel
-              alerts={MOCK_ALERTS}
-              onSelectAlert={handleSelectAlert}
-            />
-
-            {/* Infrastructure Health & Topology Foundation */}
             <InfrastructurePanel />
           </section>
         </main>

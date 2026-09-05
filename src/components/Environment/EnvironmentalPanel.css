@@ -1,94 +1,145 @@
-.rr-env-panel {
-  background: var(--bg-surface-base);
-  border: 1px solid var(--border-subtle);
+.rr-env-deck {
+  background: var(--surface-secondary);
+  border: 1px solid var(--border-obsidian);
   border-radius: var(--radius-lg);
-  padding: 12px var(--space-16);
+  padding: 14px 18px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
-.rr-env-header {
+.rr-env-deck-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.rr-env-title-wrap {
-  display: flex;
-  align-items: center;
+  min-width: 0;
   gap: 8px;
 }
 
-.rr-env-title {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+.rr-env-deck-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   color: var(--text-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.rr-env-station {
+.rr-env-deck-node {
   font-size: 10.5px;
   color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
-.rr-env-grid {
+/* Single Integrated Instrumentation Strip with Hairline Dividers */
+.rr-env-instrument-strip {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-obsidian);
+  border-radius: var(--radius-sm);
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
-.rr-env-item {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 6px 8px;
+.rr-instrument-col {
+  padding: 8px 12px;
+  border-right: 1px solid var(--border-obsidian);
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  transition: border-color var(--transition-fast);
+  justify-content: space-between;
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+  transition: background var(--trans-fast);
 }
 
-.rr-env-item:hover {
-  border-color: var(--border-medium);
+.rr-instrument-col.last {
+  border-right: none;
 }
 
-.rr-env-item-header {
+.rr-instrument-col:hover {
+  background: var(--surface-soft);
+}
+
+.rr-instrument-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-width: 0;
+  gap: 4px;
 }
 
-.rr-env-label {
-  font-size: 9px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+.rr-instrument-label {
+  font-size: 9.5px;
+  font-weight: 500;
   color: var(--text-muted);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
-.rr-env-trend {
+.rr-instrument-delta {
+  font-size: 9.5px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.rr-instrument-delta.warning {
+  color: var(--semantic-warning);
+}
+
+.rr-instrument-delta.critical {
+  color: var(--semantic-critical);
+}
+
+.rr-instrument-bottom {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
+  justify-content: space-between;
+  min-width: 0;
+  gap: 4px;
 }
 
-.rr-env-value-wrap {
+.rr-instrument-val-wrap {
   display: flex;
   align-items: baseline;
-  gap: 2px;
-  margin-top: 1px;
+  gap: 3px;
+  min-width: 0;
 }
 
-.rr-env-value {
-  font-size: 16px;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: -0.01em;
+.rr-instrument-val {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1;
+  white-space: nowrap;
 }
 
-.rr-env-unit {
+.rr-instrument-unit {
   font-size: 10.5px;
-  font-weight: 500;
   color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.rr-instrument-spark {
+  display: block;
+  opacity: 0.85;
+  flex-shrink: 0;
 }

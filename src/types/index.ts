@@ -15,6 +15,7 @@ export interface SensorData {
   code: string;
   name: string;
   location: string;
+  state: string;
   lat: number;
   lng: number;
   type: string;
@@ -33,8 +34,10 @@ export interface HazardZone {
   type: HazardType;
   title: string;
   location: string;
+  state: string;
   severity: HazardSeverity;
-  coordinates: [number, number][]; // [lat, lng] pairs
+  coordinates: [number, number][]; // [lat, lng] polygon vertices
+  center: [number, number]; // [lat, lng]
   areaKm2: number;
   riskScore: number;
   details: string;
@@ -45,6 +48,7 @@ export interface AlertItem {
   severity: HazardSeverity;
   hazardType: HazardType;
   location: string;
+  state: string;
   timestamp: string;
   summary: string;
   lat: number;
@@ -60,10 +64,26 @@ export interface KpiMetrics {
   systemHealth: string;
 }
 
+export interface EnvironmentalTelemetry {
+  temperature: { value: string; unit: string; trend: 'up' | 'down' | 'stable' };
+  humidity: { value: string; unit: string; trend: 'up' | 'down' | 'stable' };
+  rainfall: { value: string; unit: string; trend: 'up' | 'down' | 'stable' };
+  airQuality: { value: string; unit: string; trend: 'up' | 'down' | 'stable' };
+  waterLevel: { value: string; unit: string; trend: 'up' | 'down' | 'stable' };
+}
+
 export interface InfrastructureStats {
   totalDevices: number;
   online: number;
   offline: number;
   gatewayHealth: number;
   networkHealth: number;
+}
+
+export interface AiRiskAssessmentData {
+  score: number;
+  severity: 'ELEVATED' | 'HIGH' | 'CRITICAL';
+  hazardProbability: string;
+  expectedAffectedArea: string;
+  keyDrivers: Array<{ label: string; impact: string }>;
 }

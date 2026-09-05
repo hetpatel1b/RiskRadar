@@ -1,58 +1,133 @@
-.rr-app {
-  width: 100vw;
+/* ============================================================
+   STRATEGIC GEOSPATIAL COMMAND — MATHEMATICAL GRID ARCHITECTURE
+   ============================================================ */
+
+.rr-command-app {
+  width: 100%;
+  max-width: 100%;
   height: 100vh;
+  height: 100dvh;
   display: flex;
-  background-color: var(--bg-canvas);
+  background-color: var(--bg-obsidian);
   overflow: hidden;
 }
 
-.rr-main-workspace {
+.rr-command-main {
   flex: 1;
+  width: 100%;
+  min-width: 0;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   position: relative;
 }
 
-.rr-dashboard-content {
+/* Primary Operational Workspace (Consumes strictly remaining height) */
+.rr-command-workspace {
   flex: 1;
-  padding: var(--space-16) var(--space-20);
-  display: grid;
-  grid-template-columns: 1.25fr 0.95fr;
-  gap: var(--space-16);
+  min-height: 0;
+  width: 100%;
+  min-width: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   overflow: hidden;
-  min-height: 0; /* Critical for nested flex/grid auto sizing */
 }
 
-/* Primary GIS Hero Map Column (~57% width, 100% height) */
-.rr-content-hero-col {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+/* Upper Operational Stage (GIS Dominant ~59.2%, Intelligence Rail ~40.8%) */
+.rr-upper-stage {
+  flex: 1;
   min-height: 0;
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  gap: 16px;
+  overflow: hidden;
 }
 
-/* Secondary Operational Intelligence Column */
-.rr-content-side-col {
+.rr-gis-stage {
   height: 100%;
+  min-height: 0;
+  width: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
+  overflow: hidden;
+}
+
+/* Continuous Strategic Intelligence Rail (Single Level 2 Surface) */
+.rr-intel-rail {
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+  min-width: 0;
+  background: var(--surface-secondary);
+  border: 1px solid var(--border-obsidian);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
   overflow-y: auto;
-  padding-right: 2px;
-  min-height: 0;
 }
 
-/* 1920px optimization: widen GIS space and allow spacious luxury layout */
-@media (min-width: 1800px) {
-  .rr-dashboard-content {
-    grid-template-columns: 1.35fr 0.95fr;
-    gap: var(--space-20);
-    padding: var(--space-20) var(--space-24);
+/* Lower Telemetry Band: Shares the EXACT same column proportions as Upper Stage! */
+.rr-lower-telemetry-band {
+  height: 162px;
+  min-height: 162px;
+  max-height: 175px;
+  flex-shrink: 0;
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  gap: 16px;
+  overflow: hidden;
+}
+
+/* 1920x1080 Viewport Optimization: Maintains mathematical grid & increases natural breathing room */
+@media (min-width: 1700px) {
+  .rr-command-workspace {
+    padding: 20px;
+    gap: 20px;
   }
-  
-  .rr-content-side-col {
-    gap: var(--space-16);
+
+  .rr-upper-stage {
+    gap: 20px;
+  }
+
+  .rr-intel-rail {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .rr-lower-telemetry-band {
+    height: 172px;
+    min-height: 172px;
+    max-height: 180px;
+    gap: 20px;
+  }
+}
+
+/* Compact display safety (e.g. viewports with shorter window height) */
+@media (max-height: 780px) {
+  .rr-command-workspace {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .rr-upper-stage {
+    gap: 12px;
+  }
+
+  .rr-lower-telemetry-band {
+    height: 152px;
+    min-height: 152px;
+    gap: 12px;
   }
 }

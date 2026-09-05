@@ -1,125 +1,487 @@
-.rr-header {
-  height: 56px;
-  min-height: 56px;
-  background: var(--bg-surface-base);
-  border-bottom: 1px solid var(--border-subtle);
-  padding: 0 var(--space-24);
-  display: flex;
+/* ============================================================
+   RISKRADAR — COMMAND BRIDGE TOPBAR
+   Precision 3-Zone Architecture (Zero-Overlap Protection)
+   ============================================================ */
+
+.rr-command-bridge {
+  /* Precision Height: 60px standard */
+  height: 60px;
+  min-height: 60px;
+  max-height: 60px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  flex-shrink: 0;
+
+  /* Surface Depth: Distinct Elevated Graphite */
+  background-color: #101720;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+
+  /* Mathematical 3-Zone Layout Architecture */
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  column-gap: 40px;
   align-items: center;
-  justify-content: space-between;
+
+  position: relative;
+  overflow: hidden;
+  z-index: 25;
   user-select: none;
 }
 
-.rr-header-left {
-  display: flex;
-  align-items: center;
-  gap: var(--space-16);
+/* ============================================================
+   00. AMBIENT ATMOSPHERIC BACKGROUND (BEHIND ALL CONTENT)
+   ============================================================ */
+
+.rr-bridge-ambient {
+  position: absolute;
+  inset: 0;
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
 }
 
-.rr-header-title-wrap {
-  display: flex;
-  align-items: center;
-  gap: var(--space-12);
+/* Layer 1: Arctic Cyan Ambient Float (Left / Brand Area) */
+.rr-ambient-glow-cyan {
+  position: absolute;
+  top: -80px;
+  left: 50px;
+  width: 400px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99, 215, 229, 0.038) 0%, rgba(99, 215, 229, 0) 70%);
+  filter: blur(40px);
+  animation: rrAmbientFloatCyan 22s ease-in-out infinite alternate;
+  will-change: transform, opacity;
 }
 
-.rr-header-title {
-  font-size: 15px;
+@keyframes rrAmbientFloatCyan {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.025;
+  }
+  50% {
+    transform: translate(45px, 12px) scale(1.12);
+    opacity: 0.045;
+  }
+  100% {
+    transform: translate(-30px, -8px) scale(0.96);
+    opacity: 0.03;
+  }
+}
+
+/* Layer 2: Restrained Blue Ambient Float (Right / Status Area) */
+.rr-ambient-glow-blue {
+  position: absolute;
+  top: -70px;
+  right: 70px;
+  width: 450px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(117, 155, 255, 0.026) 0%, rgba(117, 155, 255, 0) 70%);
+  filter: blur(45px);
+  animation: rrAmbientFloatBlue 28s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+@keyframes rrAmbientFloatBlue {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.015;
+  }
+  50% {
+    transform: translate(-50px, 10px) scale(1.1);
+    opacity: 0.03;
+  }
+  100% {
+    transform: translate(25px, -10px) scale(0.92);
+    opacity: 0.02;
+  }
+}
+
+/* Layer 3: Command Scan Line (Softly blurred horizontal telemetry sweep) */
+.rr-ambient-scanline {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 140px;
+  background: linear-gradient(
+    90deg,
+    rgba(99, 215, 229, 0) 0%,
+    rgba(99, 215, 229, 0.022) 50%,
+    rgba(99, 215, 229, 0) 100%
+  );
+  filter: blur(3px);
+  animation: rrCommandScan 10s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+
+@keyframes rrCommandScan {
+  0% {
+    transform: translateX(-180px);
+  }
+  100% {
+    transform: translateX(2500px);
+  }
+}
+
+/* ============================================================
+   ZONE A (LEFT): BRAND ANCHOR & INSTITUTIONAL IDENTITY
+   ============================================================ */
+
+.rr-bridge-left {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  position: relative;
+  z-index: 3;
+}
+
+/* Restrained Intelligence Signal Icon (28px) */
+.rr-bridge-brand-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(99, 215, 229, 0.07);
+  border: 1px solid rgba(99, 215, 229, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #63D7E5;
+  flex-shrink: 0;
+  transition: border-color 200ms ease, background-color 200ms ease;
+}
+
+.rr-bridge-brand-mark:hover {
+  background: rgba(99, 215, 229, 0.11);
+  border-color: rgba(99, 215, 229, 0.35);
+}
+
+/* Horizontal Brand Lockup */
+.rr-bridge-brand-text {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+  animation: rrBrandEntrance 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Initial Load Brand Entrance (Single-run, stops upon settling) */
+@keyframes rrBrandEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Primary Visible Brand */
+.rr-bridge-brand-name {
+  font-family: var(--font-sans);
+  font-size: 19px;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  color: #ffffff;
+  letter-spacing: -0.025em;
+  color: #FFFFFF;
+  white-space: nowrap;
+  cursor: default;
+  transition: color 200ms ease;
 }
 
-.rr-header-divider {
-  width: 1px;
-  height: 16px;
-  background: var(--border-medium);
+.rr-bridge-brand-name:hover {
+  color: #FFFFFF;
 }
 
-.rr-live-badge {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  background: rgba(0, 240, 255, 0.08);
-  border: 1px solid rgba(0, 240, 255, 0.28);
-  padding: 3px 9px;
-  border-radius: var(--radius-sm);
-  color: var(--accent-cyan);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.rr-live-badge .pulse-dot {
-  background: var(--accent-cyan);
-  box-shadow: 0 0 6px var(--accent-cyan);
-}
-
-.rr-header-region {
-  font-size: 12px;
-  color: var(--text-secondary);
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.rr-header-region strong {
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
-.rr-header-right {
-  display: flex;
-  align-items: center;
-  gap: var(--space-24);
-}
-
-.rr-header-meta {
-  display: flex;
-  align-items: center;
-  gap: var(--space-20);
-}
-
-.rr-meta-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.rr-meta-label {
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-}
-
-.rr-meta-value {
+/* Brand Separator */
+.rr-bridge-brand-separator {
+  color: #718296;
   font-size: 13px;
+  font-weight: 300;
+  user-select: none;
+  line-height: 1;
+}
+
+/* Secondary Subtitle — Complete, crisp, luminous high-contrast */
+.rr-bridge-brand-sub {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #CAD6E2;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   ZONE B (CENTER): OPERATIONAL HEARTBEAT (PROTECTED TRUE CENTER)
+   ============================================================ */
+
+.rr-bridge-center {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: max-content;
+  white-space: nowrap;
+  position: relative;
+  z-index: 3;
+  animation: rrCenterEntrance 450ms cubic-bezier(0.16, 1, 0.3, 1) 60ms both;
+}
+
+@keyframes rrCenterEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rr-bridge-live-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* Calm Live Pulse Dot (System Alive, Not Alarm) */
+.rr-live-pulse-dot {
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  background-color: #36C98F;
+  box-shadow: 0 0 5px rgba(54, 201, 143, 0.28);
+  flex-shrink: 0;
+  animation: rrLiveDotPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes rrLiveDotPulse {
+  0%, 100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.rr-live-state-label {
+  font-family: var(--font-sans);
+  font-size: 13.5px;
+  font-weight: 620;
+  letter-spacing: 0.07em;
+  color: #E9EEF2;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   ZONE C (RIGHT): SYSTEM STATUS & SYNCHRONIZATION CLUSTER
+   Horizontally compact to guarantee ≥40px gap from Live Operations
+   ============================================================ */
+
+.rr-bridge-right {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 11px;
+  min-width: 0;
+  max-width: 100%;
+  position: relative;
+  z-index: 3;
+  animation: rrRightEntrance 450ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
+}
+
+@keyframes rrRightEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Restrained Simulated Operational Data Badge */
+.rr-bridge-sim-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 9px;
+  border-radius: 4px;
+  background: rgba(217, 185, 76, 0.07);
+  border: 1px solid rgba(217, 185, 76, 0.22);
+  color: #D9B94C;
+  font-size: 10.5px;
   font-weight: 600;
-  color: var(--text-primary);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.rr-sim-dot {
+  width: 4.5px;
+  height: 4.5px;
+  border-radius: 50%;
+  background-color: #D9B94C;
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+
+.rr-sim-label {
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.rr-sim-label-full {
+  display: inline;
+}
+
+.rr-sim-label-compact {
+  display: none;
+}
+
+/* Precision Low-Contrast Vertical Separator (14px height, 1px width) */
+.rr-bridge-divider {
+  width: 1px;
+  height: 14px;
+  background-color: rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* Last Sync Telemetry Cluster */
+.rr-bridge-sync-cluster {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.rr-sync-caption {
+  font-family: var(--font-sans);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #687586;
+  user-select: none;
+}
+
+/* Technical Telemetry Clock (Tabular Mono eliminates layout shift) */
+.rr-sync-clock {
+  font-family: var(--font-mono, 'IBM Plex Mono', monospace);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #E8EDF1;
+  font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
 }
 
-.rr-mode-badge {
-  display: flex;
+/* Primary Connected State (Highest Visual Priority in Right Zone) */
+.rr-bridge-conn-badge {
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 5px 12px;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  border-radius: var(--radius-sm);
-  color: var(--hazard-safe);
-  font-size: 11px;
+  gap: 5px;
+  height: 26px;
+  padding: 0 9px;
+  border-radius: 4px;
+  background: rgba(54, 201, 143, 0.08);
+  border: 1px solid rgba(54, 201, 143, 0.25);
+  color: #36C98F;
+  font-size: 10.5px;
   font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
-.rr-mode-badge .dot {
-  width: 6px;
-  height: 6px;
+.rr-conn-dot {
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: var(--hazard-safe);
-  box-shadow: 0 0 6px var(--hazard-safe);
+  background-color: #36C98F;
+  flex-shrink: 0;
+}
+
+.rr-conn-text {
+  line-height: 1;
+}
+
+/* ============================================================
+   RESPONSIVE OVERLAP-PROTECTION BREAKPOINTS
+   ============================================================ */
+
+/* 1366px Breakpoint: Slightly compress column gap */
+@media (max-width: 1366px) {
+  .rr-command-bridge {
+    column-gap: 32px;
+    padding: 0 16px;
+  }
+}
+
+/* 1220px Breakpoint: Hide subtitle & swap simulated badge to compact mode */
+@media (max-width: 1220px) {
+  .rr-bridge-brand-sub,
+  .rr-bridge-brand-separator {
+    display: none;
+  }
+  .rr-sim-label-full {
+    display: none;
+  }
+  .rr-sim-label-compact {
+    display: inline;
+  }
+}
+
+/* 1040px Breakpoint: Hide simulated badge if viewport is tightly constrained */
+@media (max-width: 1040px) {
+  .rr-bridge-sim-badge,
+  .rr-bridge-divider:first-of-type {
+    display: none;
+  }
+}
+
+/* ============================================================
+   ACCESSIBILITY & PREFERS-REDUCED-MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .rr-ambient-glow-cyan,
+  .rr-ambient-glow-blue,
+  .rr-ambient-scanline {
+    display: none !important;
+  }
+  .rr-bridge-brand-text,
+  .rr-bridge-center,
+  .rr-bridge-right {
+    animation: none !important;
+  }
+  .rr-live-pulse-dot {
+    animation: none !important;
+    opacity: 0.9 !important;
+  }
+  .rr-bridge-brand-name {
+    transition: none !important;
+  }
 }
