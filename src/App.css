@@ -68,12 +68,12 @@
   background: var(--surface-secondary);
   border: 1px solid var(--border-obsidian);
   border-radius: var(--radius-lg);
-  padding: 16px 18px;
+  padding: 10px 13px 14px 13px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 14px;
-  overflow-y: auto;
+  justify-content: flex-start;
+  gap: 7px;
+  overflow: hidden;
 }
 
 /* Lower Telemetry Band: Shares the EXACT same column proportions as Upper Stage! */

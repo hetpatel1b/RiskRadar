@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import L from 'leaflet';
 import { Shield } from 'lucide-react';
 import { SensorData, HazardZone, HazardType } from '../../types';
+import { normalizeIncidentId } from '../../data/risk';
 import { HazardLayersControl } from './HazardLayersControl';
 import { MapControls } from './MapControls';
 import { MapLegend } from './MapLegend';
@@ -20,6 +21,22 @@ interface RiskMapProps {
 }
 
 type MapInteractionState = 'OVERVIEW' | 'FOCUSING' | 'INCIDENT_SELECTED' | 'RETURNING';
+
+// Section 01 & 10: Default camera view (National Operational Overview)
+const DEFAULT_MAP_VIEW = {
+  center: [22.0, 79.5] as [number, number],
+  zoom: 4.8,
+};
+
+// Section 05: Incident-specific regional/local operational zoom levels
+const INCIDENT_ZOOMS: Record<string, number> = {
+  'hz-vadodara-flood': 11.0,
+  'hz-mumbai-rainfall': 10.8,
+  'hz-wayanad-landslide': 11.5,
+  'hz-uttarakhand-fire': 10.6,
+  'hz-delhi-pollution': 10.5,
+};
+const DEFAULT_INCIDENT_ZOOM = 11.0;
 
 export const RiskMap: React.FC<RiskMapProps> = ({
   sensors,
@@ -40,27 +57,20 @@ export const RiskMap: React.FC<RiskMapProps> = ({
   const sensorsLayerRef = useRef<L.LayerGroup | null>(null);
   const markersMapRef = useRef<Map<string, L.Marker>>(new Map());
 
-  // Section 03: Default camera must provide national/regional operational context
-  const INDIA_VIEW = { center: [22.0, 79.5] as [number, number], zoom: 4.8 };
-
-  // Camera State Preservation (Sections 20 & 21)
-  const overviewCameraRef = useRef<{ center: [number, number]; zoom: number }>({
-    center: INDIA_VIEW.center,
-    zoom: INDIA_VIEW.zoom,
-  });
-
   // State Machine: OVERVIEW → FOCUSING → INCIDENT_SELECTED → RETURNING → OVERVIEW (Section 47)
   const [interactionState, setInteractionState] = useState<MapInteractionState>('OVERVIEW');
   const interactionStateRef = useRef<MapInteractionState>('OVERVIEW');
   interactionStateRef.current = interactionState;
 
-  const selectedIncidentIdRef = useRef<string | null>(selectedIncidentId);
-  selectedIncidentIdRef.current = selectedIncidentId;
+  const normalizedSelectedId = normalizeIncidentId(selectedIncidentId);
+  const selectedIncidentIdRef = useRef<string | null>(normalizedSelectedId);
+  selectedIncidentIdRef.current = normalizedSelectedId;
 
   // Collision-Aware Card Positioning (Sections 15 & 16)
   const [cardPosition, setCardPosition] = useState<{ left: number; top: number }>({ left: 30, top: 70 });
   const [isClosingCard, setIsClosingCard] = useState<boolean>(false);
   const closeTimeoutRef = useRef<number | null>(null);
+  const focusTimeoutRef = useRef<number | null>(null);
 
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [tileError, setTileError] = useState<boolean>(false);
@@ -137,73 +147,77 @@ export const RiskMap: React.FC<RiskMapProps> = ({
   // INCIDENT SELECTION & CLEARANCE (Single Source of Truth, Sections 28 & 29)
   // ---------------------------------------------------------------------------
   const selectIncident = useCallback(
-    (id: string) => {
+    (rawId: string) => {
       if (!mapRef.current) return;
+      const id = normalizeIncidentId(rawId) || rawId;
       const targetZone = hazardZones.find((z) => z.id === id);
       if (!targetZone) return;
 
-      // Prevent duplicate transitions
+      // Prevent duplicate transitions if already focused on same incident
       if (selectedIncidentIdRef.current === id && interactionStateRef.current === 'INCIDENT_SELECTED') {
         return;
       }
 
-      // Preserve current user camera before flying to incident if in overview (Section 21)
-      if (interactionStateRef.current === 'OVERVIEW') {
-        const c = mapRef.current.getCenter();
-        overviewCameraRef.current = {
-          center: [c.lat, c.lng],
-          zoom: mapRef.current.getZoom(),
-        };
-      }
-
-      // Cancel any pending return timeout
+      // Cancel any pending return/focus timeout cleanly (Section 32)
       if (closeTimeoutRef.current) {
         clearTimeout(closeTimeoutRef.current);
         closeTimeoutRef.current = null;
+      }
+      if (focusTimeoutRef.current) {
+        clearTimeout(focusTimeoutRef.current);
+        focusTimeoutRef.current = null;
       }
       setIsClosingCard(false);
 
       setInteractionState('FOCUSING');
       onSelectIncident(id);
 
-      // Section 10: Smooth flyTo, duration 750ms (within 600-900ms requirement)
-      mapRef.current.flyTo(targetZone.center, 10.5, {
-        duration: 0.75,
+      const targetZoom = INCIDENT_ZOOMS[id] || DEFAULT_INCIDENT_ZOOM;
+
+      // Section 04: Smooth GIS flyTo, duration ~0.95s (within 800-1200ms) with ease-out
+      mapRef.current.flyTo(targetZone.center, targetZoom, {
+        duration: 0.95,
         easeLinearity: 0.25,
       });
 
-      // Synchronize card display after camera begins focusing (Section 40)
-      setTimeout(() => {
+      // Synchronize card display after camera starts moving (Section 08, 40)
+      focusTimeoutRef.current = window.setTimeout(() => {
         updateCardPosition();
         setInteractionState('INCIDENT_SELECTED');
-      }, 350);
+        focusTimeoutRef.current = null;
+      }, 300);
     },
     [hazardZones, onSelectIncident, updateCardPosition]
   );
 
   const clearIncidentSelection = useCallback(() => {
-    if (!mapRef.current || !selectedIncidentIdRef.current) return;
+    if (!mapRef.current) return;
+
+    if (focusTimeoutRef.current) {
+      clearTimeout(focusTimeoutRef.current);
+      focusTimeoutRef.current = null;
+    }
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
 
     setIsClosingCard(true);
     setInteractionState('RETURNING');
 
-    // Section 20: Smooth camera return to saved overview camera (500-800ms)
-    mapRef.current.flyTo(overviewCameraRef.current.center, overviewCameraRef.current.zoom, {
-      duration: 0.72,
+    // Section 09, 10, 11: Smoothly fly back to DEFAULT_MAP_VIEW (National Multi-Hazard Theatre)
+    mapRef.current.flyTo(DEFAULT_MAP_VIEW.center, DEFAULT_MAP_VIEW.zoom, {
+      duration: 0.95,
       easeLinearity: 0.25,
     });
 
-    if (closeTimeoutRef.current) {
-      clearTimeout(closeTimeoutRef.current);
-    }
-
-    // Section 59: Card closes (180-220ms), selection clears, all markers restored
+    // Card closes (200-240ms), selection clears, all markers restored
     closeTimeoutRef.current = window.setTimeout(() => {
       setIsClosingCard(false);
       onSelectIncident(null);
       setInteractionState('OVERVIEW');
       closeTimeoutRef.current = null;
-    }, 200);
+    }, 220);
   }, [onSelectIncident]);
 
   // ---------------------------------------------------------------------------
@@ -214,8 +228,8 @@ export const RiskMap: React.FC<RiskMapProps> = ({
 
     // Section 03 & 24: Starts cleanly at India Overview with NO auto-selection
     const map = L.map(mapContainerRef.current, {
-      center: INDIA_VIEW.center,
-      zoom: INDIA_VIEW.zoom,
+      center: DEFAULT_MAP_VIEW.center,
+      zoom: DEFAULT_MAP_VIEW.zoom,
       zoomControl: false,
       attributionControl: true,
       minZoom: 3.8,
@@ -258,17 +272,6 @@ export const RiskMap: React.FC<RiskMapProps> = ({
     sensorsLayerRef.current = sensorsGroup;
     mapRef.current = map;
 
-    // Preserve user manual overview camera changes (Section 21)
-    map.on('moveend', () => {
-      if (interactionStateRef.current === 'OVERVIEW' && !selectedIncidentIdRef.current) {
-        const c = map.getCenter();
-        overviewCameraRef.current = {
-          center: [c.lat, c.lng],
-          zoom: map.getZoom(),
-        };
-      }
-    });
-
     // Reposition card when user pans/zooms while focused
     map.on('move', () => {
       if (selectedIncidentIdRef.current) {
@@ -276,18 +279,14 @@ export const RiskMap: React.FC<RiskMapProps> = ({
       }
     });
 
-    // Section 37: Clicking empty map canvas clears selection & restores overview
-    map.on('click', () => {
-      if (selectedIncidentIdRef.current) {
-        clearIncidentSelection();
-      }
-    });
+    // Section 25: Do NOT automatically deselect when clicking anywhere on the map.
+    // User must explicitly click X, Map Reset, or press ESC.
 
     return () => {
       map.remove();
       mapRef.current = null;
     };
-  }, [clearIncidentSelection, updateCardPosition]);
+  }, [updateCardPosition]);
 
   // Container Resize Observer
   useEffect(() => {
@@ -304,7 +303,7 @@ export const RiskMap: React.FC<RiskMapProps> = ({
     return () => resizeObserver.disconnect();
   }, [updateCardPosition]);
 
-  // Section 36: Escape Key clears incident selection and restores overview
+  // Section 26: Escape Key clears incident selection and restores overview
   useEffect(() => {
     if (!selectedIncidentId) return;
 
@@ -321,13 +320,16 @@ export const RiskMap: React.FC<RiskMapProps> = ({
 
   // React to external selectedIncidentId changes (e.g. FOCUS GIS from Active Incidents rail)
   useEffect(() => {
-    if (selectedIncidentId && selectedIncidentId !== selectedIncidentIdRef.current) {
-      selectIncident(selectedIncidentId);
+    const norm = normalizeIncidentId(selectedIncidentId);
+    if (norm && norm !== selectedIncidentIdRef.current) {
+      selectIncident(norm);
+    } else if (!norm && selectedIncidentIdRef.current) {
+      clearIncidentSelection();
     }
-  }, [selectedIncidentId, selectIncident]);
+  }, [selectedIncidentId, selectIncident, clearIncidentSelection]);
 
   // ---------------------------------------------------------------------------
-  // 2. RENDER HAZARD POLYGONS (Section 13: Emphasized zone when selected)
+  // 2. RENDER HAZARD POLYGONS (Section 19: Only selected zone shown when focused)
   // ---------------------------------------------------------------------------
   useEffect(() => {
     const group = hazardsLayerRef.current;
@@ -347,7 +349,9 @@ export const RiskMap: React.FC<RiskMapProps> = ({
     hazardZones.forEach((zone) => {
       if (!activeLayers[zone.type]) return;
 
-      const isSelected = zone.id === selectedIncidentId;
+      const isSelected = zone.id === normalizedSelectedId;
+      // Section 19: When an incident is selected, show ONLY that incident's affected zone
+      if (normalizedSelectedId && !isSelected) return;
       const isHighlighted = highlightedHazardType === zone.type;
       const baseColor = layerColorMap[zone.type] || '#63D7E5';
       const isCritical = zone.severity === 'critical';
@@ -396,7 +400,7 @@ export const RiskMap: React.FC<RiskMapProps> = ({
     hazardZones.forEach((zone) => {
       if (!activeLayers[zone.type]) return;
 
-      const isSelected = zone.id === selectedIncidentId;
+      const isSelected = zone.id === normalizedSelectedId;
       const isCritical = zone.severity === 'critical';
       const isWarning = zone.severity === 'warning';
       const sevClass = isCritical ? 'critical' : isWarning ? 'warning' : 'watch';
@@ -465,7 +469,7 @@ export const RiskMap: React.FC<RiskMapProps> = ({
 
       marker.addTo(group);
     });
-  }, [hazardZones, activeLayers, selectedIncidentId, selectIncident]);
+  }, [hazardZones, activeLayers, normalizedSelectedId, selectIncident]);
 
   // ---------------------------------------------------------------------------
   // 4. RENDER DISTRIBUTED OPERATIONAL SENSOR NODES (Section 05: Ahmedabad, Surat, etc.)
@@ -534,12 +538,10 @@ export const RiskMap: React.FC<RiskMapProps> = ({
   const handleZoomIn = useCallback(() => mapRef.current?.zoomIn(), []);
   const handleZoomOut = useCallback(() => mapRef.current?.zoomOut(), []);
 
-  // Section 22: Reset View clears selection & returns smoothly to Overview
+  // Section 28: Reset View clears selection & returns smoothly to Overview
   const handleResetIndia = useCallback(() => {
-    overviewCameraRef.current = { center: INDIA_VIEW.center, zoom: INDIA_VIEW.zoom };
     clearIncidentSelection();
-    mapRef.current?.flyTo(INDIA_VIEW.center, INDIA_VIEW.zoom, { duration: 0.8, easeLinearity: 0.25 });
-  }, [INDIA_VIEW.center, INDIA_VIEW.zoom, clearIncidentSelection]);
+  }, [clearIncidentSelection]);
 
   // Locate Primary Incident (Vadodara)
   const handleLocateVadodara = useCallback(() => {
@@ -555,7 +557,7 @@ export const RiskMap: React.FC<RiskMapProps> = ({
     }
   }, []);
 
-  const selectedZone = hazardZones.find((z) => z.id === selectedIncidentId);
+  const selectedZone = hazardZones.find((z) => z.id === normalizedSelectedId);
 
   return (
     <div

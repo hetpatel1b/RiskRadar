@@ -570,11 +570,11 @@
 }
 
 .rr-incident-detail-card.open {
-  animation: rrIncidentCardEnter 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: rrIncidentCardEnter 240ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .rr-incident-detail-card.closing {
-  animation: rrIncidentCardExit 180ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: rrIncidentCardExit 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes rrIncidentCardEnter {

@@ -12,6 +12,7 @@ import {
   MOCK_HAZARD_ZONES,
   MOCK_ALERTS,
   INITIAL_KPIS,
+  normalizeIncidentId,
 } from './data';
 import { SensorData, AlertItem, HazardType } from './types';
 import './App.css';
@@ -22,20 +23,9 @@ export const App: React.FC = () => {
   const [selectedSensor, setSelectedSensor] = useState<SensorData | null>(null);
   const [highlightedHazard, setHighlightedHazard] = useState<HazardType | null>(null);
 
-  // When an alert or focus action is triggered from the intelligence rail:
-  const handleSelectAlert = (alert: AlertItem) => {
-    setHighlightedHazard(alert.hazardType);
-
-    // Single source of truth: match alert to corresponding hazard zone (Sections 27, 28, 29)
-    const matchingZone = MOCK_HAZARD_ZONES.find(
-      (z) =>
-        z.location.toLowerCase().includes(alert.location.toLowerCase()) ||
-        alert.location.toLowerCase().includes(z.location.toLowerCase()) ||
-        z.type === alert.hazardType
-    );
-    if (matchingZone) {
-      setSelectedIncidentId(matchingZone.id);
-    }
+  // Single Source of Truth for incident selection across GIS Map, Intelligence Rail, and AI Risk
+  const handleSelectIncident = (id: string | null) => {
+    setSelectedIncidentId(normalizeIncidentId(id));
   };
 
   return (
@@ -65,7 +55,7 @@ export const App: React.FC = () => {
                 sensors={MOCK_SENSORS}
                 hazardZones={MOCK_HAZARD_ZONES}
                 selectedIncidentId={selectedIncidentId}
-                onSelectIncident={setSelectedIncidentId}
+                onSelectIncident={handleSelectIncident}
                 selectedSensorId={selectedSensor?.id || null}
                 onSelectSensor={setSelectedSensor}
                 highlightedHazardType={highlightedHazard}
@@ -74,10 +64,11 @@ export const App: React.FC = () => {
 
             {/* Continuous Strategic Intelligence Rail */}
             <aside className="rr-intel-rail" aria-label="Strategic Intelligence Rail">
-              <AiRiskCard />
+              <AiRiskCard selectedIncidentId={selectedIncidentId} />
               <AlertsPanel
                 alerts={MOCK_ALERTS}
-                onSelectAlert={handleSelectAlert}
+                selectedIncidentId={selectedIncidentId}
+                onSelectIncident={handleSelectIncident}
               />
             </aside>
           </div>

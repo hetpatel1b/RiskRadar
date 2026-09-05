@@ -1,132 +1,301 @@
+/* ============================================================
+   RISKRADAR — AI RISK ASSESSMENT INTELLIGENCE PANEL
+   ============================================================ */
+
 .rr-ai-section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
-  padding-bottom: var(--space-16);
+  gap: 7px;
+  padding-bottom: 9px;
   border-bottom: 1px solid var(--border-obsidian);
+  flex-shrink: 0;
+  user-select: none;
 }
 
+/* Header & Engine Status */
 .rr-ai-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rr-ai-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.rr-ai-section-title {
+  font-size: 10.5px;
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.rr-ai-engine-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(99, 215, 229, 0.08);
+  border: 1px solid rgba(99, 215, 229, 0.22);
+  padding: 1px 4.5px;
+  border-radius: 3px;
+}
+
+.rr-ai-live-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--signal-cyan);
+  animation: rrLiveDotPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes rrLiveDotPulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+.rr-ai-live-text {
+  font-size: 8px;
+  font-weight: 600;
+  color: var(--signal-cyan);
+  letter-spacing: 0.04em;
+}
+
+/* Radial Gauge + Metrics Matrix Row */
+.rr-ai-radial-row {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-obsidian);
+  border-radius: var(--radius-sm);
+  padding: 5px 7px;
+}
+
+/* Radial Gauge Container */
+.rr-ai-radial-block {
+  position: relative;
+  width: 58px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rr-ai-ring-svg {
+  display: block;
+}
+
+.rr-ai-progress-arc {
+  transition: stroke-dashoffset 800ms cubic-bezier(0.16, 1, 0.3, 1), stroke 350ms ease;
+}
+
+.rr-ai-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.rr-ai-ring-val {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.rr-ai-ring-label {
+  font-size: 6.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin-top: 1px;
+  text-transform: uppercase;
+}
+
+/* Supporting 3-Metric Baseline Grid */
+.rr-ai-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  min-width: 0;
+}
+
+.rr-ai-metric-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.rr-ai-metric-label {
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rr-ai-metric-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rr-ai-metric-context {
+  font-size: 7.5px;
+  color: var(--signal-cyan);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* AI Signals Block */
+.rr-ai-signals-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rr-ai-signals-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.rr-ai-section-title {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: var(--text-secondary);
-}
-
-/* Primary Metric & Meter Row */
-.rr-ai-primary-row {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: var(--space-16);
-  background: var(--surface-elevated);
-  border: 1px solid var(--border-obsidian);
-  border-radius: var(--radius-sm);
-  padding: 8px 12px;
-}
-
-.rr-ai-gauge-block {
-  position: relative;
-  width: 76px;
-  height: 44px;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-
-.rr-ai-arc-svg {
-  display: block;
-}
-
-.rr-ai-gauge-val {
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  right: 0;
-  text-align: center;
-}
-
-.rr-ai-main-num {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-primary);
-  line-height: 1;
-}
-
-.rr-ai-key-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-12);
-}
-
-.rr-ai-sub-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.rr-sub-stat-label {
-  font-size: 9.5px;
-  font-weight: 500;
+.rr-ai-signals-title {
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.05em;
   color: var(--text-muted);
-  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
-.rr-sub-stat-val {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--text-primary);
+.rr-ai-trend-indicator {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 8.5px;
+  color: var(--text-muted);
 }
 
-.rr-sub-stat-val.critical {
+.rr-ai-trend-indicator strong.escalating {
   color: var(--semantic-critical);
 }
-
-/* Why this risk */
-.rr-ai-drivers-block {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.rr-ai-trend-indicator strong.elevated {
+  color: var(--semantic-warning);
+}
+.rr-ai-trend-indicator strong.stable {
+  color: var(--signal-cyan);
 }
 
-.rr-ai-drivers-label {
-  font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
+.rr-ai-signals-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
 }
 
-.rr-ai-drivers-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.rr-driver-item {
+.rr-signal-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: space-between;
+  gap: 3px;
   background: var(--surface-elevated);
   border: 1px solid var(--border-obsidian);
   border-radius: var(--radius-sm);
-  padding: 3px 7px;
+  padding: 2.5px 5px;
+  min-width: 0;
 }
 
-.rr-driver-dot {
-  width: 4.5px;
-  height: 4.5px;
+.rr-signal-dot {
+  width: 3.5px;
+  height: 3.5px;
   border-radius: 50%;
-  background: var(--semantic-critical);
+  flex-shrink: 0;
+  animation: rrSignalDotPulse 3s ease-in-out infinite;
 }
 
-.rr-driver-name {
-  font-size: 11px;
+@keyframes rrSignalDotPulse {
+  0%, 100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.rr-signal-dot.critical {
+  background: var(--semantic-critical);
+  box-shadow: 0 0 3px rgba(240, 93, 107, 0.6);
+}
+.rr-signal-dot.elevated {
+  background: var(--semantic-warning);
+}
+.rr-signal-dot.moderate {
+  background: var(--signal-cyan);
+}
+
+.rr-signal-label {
+  font-size: 8.5px;
   color: var(--text-secondary);
-  font-weight: 450;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.rr-signal-arrow {
+  font-size: 8.5px;
+  font-weight: 700;
+  color: var(--semantic-critical);
+  flex-shrink: 0;
+}
+
+/* Concise AI Narrative Box */
+.rr-ai-narrative-box {
+  background: rgba(0, 0, 0, 0.25);
+  border-left: 2px solid var(--signal-cyan);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 3.5px 7px;
+  animation: rrNarrativeFade 220ms ease-out both;
+}
+
+@keyframes rrNarrativeFade {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rr-ai-narrative-text {
+  font-size: 9.5px;
+  color: var(--text-secondary);
+  line-height: 1.3;
+  margin: 0;
 }
